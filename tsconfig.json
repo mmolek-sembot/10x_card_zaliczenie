@@ -6,6 +6,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "baseUrl": ".",
+    "module": "es2022",
     "paths": {
       "@/*": ["./src/*"]
     }
