@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 import type { Database } from '../../db/database.types';
 import type { FlashcardProposalDto, GenerateFlashcardsCommand } from '../../types';
+import { createOpenRouterService, SCHEMAS } from '../services/openrouter';
+import type { ChatOptions, FlashcardCollectionContent } from '../services/openrouter';
 
 /**
  * Service responsible for flashcard generation logic
@@ -16,11 +18,17 @@ import type { FlashcardProposalDto, GenerateFlashcardsCommand } from '../../type
  */
 export class GenerationService {
   private readonly supabase: SupabaseClient<Database>;
-  private readonly model = 'gpt-3.5-turbo'; // Default model for MVP
+  private readonly openRouter;
+  private readonly model = 'deepseek/deepseek-chat-v3-0324:free'; // Default OpenRouter model
   private readonly aiRequestTimeout = 40000; // 40s timeout as specified in plan
 
   constructor(supabase: SupabaseClient<Database>) {
     this.supabase = supabase;
+    this.openRouter = createOpenRouterService({
+      defaultModel: this.model,
+      timeout: this.aiRequestTimeout,
+      defaultSystemMessage: 'You are a specialized AI that creates educational flashcards. Your task is to create clear, concise, and educational flashcards based on the text provided.'
+    });
   }
 
   /**
@@ -63,8 +71,7 @@ export class GenerationService {
         throw new Error('Failed to create generation: No record returned');
       }
 
-      // Generate flashcards using AI (mock implementation for now)
-      // In a real implementation, this would call an external AI service
+      // Generate flashcards using OpenRouter AI service
       const flashcardProposals = await this.callAiService(data.source_text);
       
       // Update generation record with results
@@ -116,7 +123,7 @@ export class GenerationService {
         setTimeout(() => reject(new Error('AI service request timed out')), this.aiRequestTimeout);
       });
 
-      // The actual AI service call with prompt engineering for flashcard generation
+      // The actual AI service call using OpenRouter
       const aiServicePromise = this.makeAiServiceRequest(sourceText);
 
       // Race the AI call against the timeout
@@ -135,105 +142,190 @@ export class GenerationService {
   }
 
   /**
-   * Makes the actual API request to the AI service
-   * In a production implementation, this would call OpenAI or another LLM service
+   * Makes the actual API request to the OpenRouter AI service
    */
   private async makeAiServiceRequest(sourceText: string): Promise<FlashcardProposalDto[]> {
-    // For MVP, we're implementing a simulated AI service with improved flashcard generation
-    // This would be replaced with a real API call in production
-    
-    // Simulate network delay to mimic real API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
     try {
-      // Extract key concepts from text (simulated NLP processing)
-      const sentences = sourceText.split(/[.!?]\s+/);
-      const keywords = this.extractKeywords(sourceText);
-      
-      // Generate 5-10 flashcards based on content length
+      // Determine number of flashcards to generate based on content length
       const cardCount = Math.min(Math.max(Math.floor(sourceText.length / 1000), 5), 10);
-      const selectedKeywords = keywords.slice(0, cardCount);
       
-      // Generate actual flashcards with more meaningful content
-      return selectedKeywords.map(keyword => {
-        // Find relevant sentences containing this keyword
-        const relevantSentences = sentences.filter(sentence => 
-          sentence.toLowerCase().includes(keyword.toLowerCase())
-        ).slice(0, 2);
+      // Create the prompt for generating flashcards with explicit JSON instructions
+      const prompt = `Generate ${cardCount} educational flashcards from the following text. 
+Each flashcard should focus on a key concept or fact from the text.
+Focus on creating effective learning materials with clear questions and concise answers.
+
+IMPORTANT: You MUST respond with a valid JSON object following this exact structure:
+{
+  "flashcards": [
+    {
+      "front": "Question 1",
+      "back": "Answer 1"
+    },
+    {
+      "front": "Question 2",
+      "back": "Answer 2"
+    }
+    ...
+  ]
+}
+
+Do not include any explanations, introductions, or any text outside the JSON structure.
+
+SOURCE TEXT:
+${sourceText}`;
+
+      try {
+        // Call OpenRouter API with flashcard schema
+        const response = await this.openRouter.chat({
+          userMessage: prompt,
+          responseFormat: SCHEMAS.FLASHCARD_COLLECTION,
+          parameters: {
+            temperature: 0.4,
+            top_p: 0.95,
+            max_tokens: 2000
+          }
+        });
         
-        // Create question (front) and answer (back)
-        const front = this.generateQuestion(keyword, relevantSentences);
-        const back = this.generateAnswer(keyword, relevantSentences);
+        // Convert the response to our FlashcardProposalDto format
+        const flashcardCollection = response.content as FlashcardCollectionContent;
         
-        return {
-          front,
-          back,
+        return flashcardCollection.flashcards.map(card => ({
+          front: card.front,
+          back: card.back,
           source: 'ai-full' as const
-        };
-      });
+        }));
+      } catch (schemaError) {
+        // Fallback: Try using a text response and manual JSON parsing
+        console.warn('Schema validation failed, attempting fallback method:', schemaError);
+        
+        const textResponse = await this.openRouter.chat({
+          userMessage: prompt,
+          // No responseFormat specified - get raw text
+          parameters: {
+            temperature: 0.4,
+            top_p: 0.95,
+            max_tokens: 2000
+          }
+        });
+        
+        // Extract JSON from text response
+        const content = textResponse.content as string;
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        
+        if (jsonMatch) {
+          try {
+            const parsedJson = JSON.parse(jsonMatch[0]);
+            if (parsedJson.flashcards && Array.isArray(parsedJson.flashcards)) {
+              return parsedJson.flashcards.map((card: any) => ({
+                front: card.front || '',
+                back: card.back || '',
+                source: 'ai-full' as const
+              }));
+            }
+          } catch (parseError) {
+            console.error('Failed to parse extracted JSON:', parseError);
+          }
+        }
+        
+        // If all else fails, try to extract flashcards from text using patterns
+        return this.extractFlashcardsFromText(content, cardCount);
+      }
     } catch (error) {
-      console.error('Error in AI service simulation:', error);
+      console.error('Error calling OpenRouter service:', error);
       throw new Error('Failed to generate flashcards from text');
     }
   }
   
   /**
-   * Extract important keywords from text (simulated NLP)
+   * Fallback method to extract flashcards from unstructured text response
+   * when JSON parsing fails
    */
-  private extractKeywords(text: string): string[] {
-    // In a real implementation, this would use NLP techniques
-    // For now, we'll extract words that appear multiple times and are meaningful
-    const words = text.toLowerCase().split(/\s+/);
-    const wordCounts = words.reduce((acc, word) => {
-      // Remove punctuation and only consider words longer than 4 characters
-      const cleanWord = word.replace(/[^a-z0-9]/g, '');
-      if (cleanWord.length > 4) {
-        acc[cleanWord] = (acc[cleanWord] || 0) + 1;
+  private extractFlashcardsFromText(text: string, expectedCount: number): FlashcardProposalDto[] {
+    const flashcards: FlashcardProposalDto[] = [];
+    
+    // Try to identify flashcard patterns in the text
+    // Look for numbered patterns, "Front:" / "Back:" patterns, or Q&A patterns
+    
+    // Pattern 1: Numbered flashcards
+    const numberedPattern = /(\d+)[\s.):]+([^\n]+)\n+([^\n]+)/g;
+    let match;
+    
+    while ((match = numberedPattern.exec(text)) !== null && flashcards.length < expectedCount) {
+      const front = match[2].trim();
+      const back = match[3].trim();
+      
+      if (front && back) {
+        flashcards.push({
+          front,
+          back,
+          source: 'ai-full' as const
+        });
       }
-      return acc;
-    }, {} as Record<string, number>);
-    
-    // Sort by frequency and importance (longer words get priority)
-    return Object.entries(wordCounts)
-      .filter(([_, count]) => count > 1) // Only words that appear multiple times
-      .sort((a, b) => (b[1] * b[0].length) - (a[1] * a[0].length)) // Sort by frequency * length
-      .map(([word]) => word)
-      .slice(0, 15); // Take top 15 keywords
-  }
-  
-  /**
-   * Generate a question for the flashcard front
-   */
-  private generateQuestion(keyword: string, contexts: string[]): string {
-    // Create more varied question formats based on the keyword
-    const questionTemplates = [
-      `What is ${keyword}?`,
-      `Define the term "${keyword}" in the context of this subject.`,
-      `Explain the concept of ${keyword} as mentioned in the text.`,
-      `What are the key characteristics of ${keyword}?`,
-      `How would you describe ${keyword} to someone unfamiliar with it?`
-    ];
-    
-    // Select a random template for variety
-    const template = questionTemplates[Math.floor(Math.random() * questionTemplates.length)];
-    return template;
-  }
-  
-  /**
-   * Generate an answer for the flashcard back
-   */
-  private generateAnswer(keyword: string, contexts: string[]): string {
-    if (contexts.length === 0) {
-      return `${keyword} is an important concept in this text. Further details were not provided.`;
     }
     
-    // Combine relevant contexts into a coherent answer
-    const combinedContext = contexts.join(' ');
-    if (combinedContext.length > 200) {
-      return combinedContext.substring(0, 197) + '...';
+    // Pattern 2: Front/Back pattern
+    if (flashcards.length < expectedCount) {
+      const frontBackPattern = /Front:[\s]*([^\n]+)\n+Back:[\s]*([^\n]+)/gi;
+      while ((match = frontBackPattern.exec(text)) !== null && flashcards.length < expectedCount) {
+        const front = match[1].trim();
+        const back = match[2].trim();
+        
+        if (front && back) {
+          flashcards.push({
+            front,
+            back,
+            source: 'ai-full' as const
+          });
+        }
+      }
     }
     
-    return combinedContext;
+    // Pattern 3: Q&A pattern
+    if (flashcards.length < expectedCount) {
+      const qaPattern = /(?:Question|Q):[\s]*([^\n]+)\n+(?:Answer|A):[\s]*([^\n]+)/gi;
+      while ((match = qaPattern.exec(text)) !== null && flashcards.length < expectedCount) {
+        const front = match[1].trim();
+        const back = match[2].trim();
+        
+        if (front && back) {
+          flashcards.push({
+            front,
+            back,
+            source: 'ai-full' as const
+          });
+        }
+      }
+    }
+    
+    // If we still couldn't extract any flashcards, create simple ones from paragraphs
+    if (flashcards.length === 0) {
+      const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
+      
+      for (let i = 0; i < Math.min(paragraphs.length, expectedCount); i++) {
+        const paragraph = paragraphs[i].trim();
+        if (paragraph.length > 10) {
+          const sentenceEnd = paragraph.search(/[.!?]/);
+          if (sentenceEnd > 0) {
+            const front = paragraph.substring(0, sentenceEnd + 1);
+            const back = paragraph.substring(sentenceEnd + 1).trim() || "Review this content for details.";
+            
+            flashcards.push({
+              front,
+              back,
+              source: 'ai-full' as const
+            });
+          } else {
+            flashcards.push({
+              front: `What is important about this content?`,
+              back: paragraph,
+              source: 'ai-full' as const
+            });
+          }
+        }
+      }
+    }
+    
+    return flashcards;
   }
 
   /**
