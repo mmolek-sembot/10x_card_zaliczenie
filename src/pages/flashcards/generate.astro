@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { GeneratorPage } from '../../components/Generator/GeneratorPage';
+---
+
+<Layout title="Generowanie Fiszek - 10xCard">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Generator Fiszek</h1>
+    <div class="generator-container">
+      <GeneratorPage client:load />
+    </div>
+  </main>
+</Layout> 
