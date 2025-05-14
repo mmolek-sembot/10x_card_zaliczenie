@@ -68,7 +68,7 @@ export class OpenRouterService {
     ttl: 5 * 60 * 1000, // 5 minutes
     maxSize: 100
   };
-  private static readonly DEFAULT_MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+  private static readonly DEFAULT_MODEL = 'openai/gpt-4.1-nano';
   private static readonly DEFAULT_SYSTEM_MESSAGE = 'You are a helpful assistant that creates educational content.';
   private static readonly DEFAULT_PARAMETERS: ModelParameters = {
     temperature: 0.7,
@@ -604,7 +604,10 @@ export class OpenRouterService {
       try {
         // If it's a string, parse it to JSON
         if (typeof content === 'string') {
-          content = safeJsonParse(content);
+          // Strip markdown code block formatting if present
+          const contentStr = content as string;
+          const jsonContent = contentStr.replace(/^```(json)?\s*|\s*```$/g, '');
+          content = safeJsonParse(jsonContent);
         }
         
         // Validate against schema if provided
