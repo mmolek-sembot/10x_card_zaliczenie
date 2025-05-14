@@ -74,6 +74,64 @@ export const GET: APIRoute = async ({ params, locals }) => {
   }
 };
 
+export const DELETE: APIRoute = async ({ params, locals }) => {
+  try {
+    // Early return if no Supabase client or user
+    // if (!locals.supabase || !locals.user) {
+    //   return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    //     status: 401,
+    //     headers: { 'Content-Type': 'application/json' }
+    //   });
+    // }
+
+    // Validate ID parameter
+    const result = flashcardIdSchema.safeParse({ id: params.id });
+    if (!result.success) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid flashcard ID',
+        details: result.error.issues 
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Log incoming request
+    console.info('Processing DELETE /api/flashcards/:id request:', {
+      flashcardId: params.id,
+      timestamp: new Date().toISOString()
+    });
+
+    // Initialize service and delete flashcard
+    const flashcardsService = new FlashcardsService(locals.supabase);
+    const deleted = await flashcardsService.deleteFlashcard(result.data.id, DEFAULT_USER_ID);
+
+    // Return 404 if flashcard not found
+    if (!deleted) {
+      return new Response(JSON.stringify({ 
+        error: 'Flashcard not found' 
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Return successful response with no content
+    return new Response(null, {
+      status: 204
+    });
+
+  } catch (error) {
+    console.error('Error deleting flashcard:', error);
+    return new Response(JSON.stringify({ 
+      error: 'Internal server error' 
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+};
+
 export const PUT: APIRoute = async ({ params, request, locals }) => {
   try {
     // Early return if no Supabase client or user

@@ -5,6 +5,50 @@ import type { FlashcardsQuerySchemaType } from '../schemas/flashcards.schema';
 export class FlashcardsService {
   constructor(private supabase: SupabaseClient) {}
 
+  async deleteFlashcard(id: number, userId: string): Promise<boolean> {
+    try {
+      // Sprawdź, czy fiszka istnieje i należy do użytkownika
+      const flashcard = await this.getFlashcardById(id, userId);
+      if (!flashcard) {
+        return false;
+      }
+      
+      // Usuń fiszkę
+      const { error } = await this.supabase
+        .from('flashcards')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+      
+      if (error) {
+        console.error('Database error while deleting flashcard:', {
+          error,
+          flashcardId: id,
+          userId
+        });
+        throw new Error(`Failed to delete flashcard: ${error.message}`);
+      }
+      
+      // Logowanie pomyślnego usunięcia
+      console.info('Flashcard deleted successfully:', {
+        flashcardId: id,
+        userId,
+        timestamp: new Date().toISOString()
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Unexpected error in deleteFlashcard:', {
+        error,
+        flashcardId: id,
+        userId,
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      
+      throw new Error(`Unexpected error deleting flashcard: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   async getFlashcardById(id: number, userId: string): Promise<FlashcardDto | null> {
     try {
       const { data, error } = await this.supabase
