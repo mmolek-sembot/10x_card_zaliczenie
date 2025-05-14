@@ -1,0 +1,13 @@
+---
+import FlashcardsLayout from '@/layouts/FlashcardsLayout.astro';
+import { FlashcardsList } from '@/components/flashcards/FlashcardsList';
+import { EditFlashcardModal } from '@/components/flashcards/EditFlashcardModal';
+import { DeleteConfirmDialog } from '@/components/flashcards/DeleteConfirmDialog';
+---
+
+<FlashcardsLayout>
+  <FlashcardsList client:load>
+    <EditFlashcardModal client:load />
+    <DeleteConfirmDialog client:load />
+  </FlashcardsList>
+</FlashcardsLayout>
