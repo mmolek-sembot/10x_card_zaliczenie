@@ -6,6 +6,8 @@ import type {
   FlashcardSource 
 } from '../../types';
 import { DEFAULT_USER_ID } from '../../db/supabase.client';
+import { FlashcardsService } from '../../lib/services/flashcards.service';
+import { flashcardsQuerySchema } from '../../lib/schemas/flashcards.schema';
 
 // Validation schema for a single flashcard
 const flashcardSchema = z.object({
@@ -129,6 +131,44 @@ export const POST: APIRoute = async ({ request, locals }) => {
     console.error('Error processing flashcards creation:', error);
     return new Response(JSON.stringify({
       error: 'Internal server error'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+};
+
+export const GET: APIRoute = async ({ request, locals }) => {
+  try {
+    // Get URL search params
+    const url = new URL(request.url);
+    const searchParams = Object.fromEntries(url.searchParams);
+
+    // Validate query parameters
+    const result = flashcardsQuerySchema.safeParse(searchParams);
+    if (!result.success) {
+      return new Response(JSON.stringify({
+        error: 'Invalid query parameters',
+        details: result.error.issues
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get flashcards
+    const service = new FlashcardsService(locals.supabase);
+    const response = await service.getFlashcards(result.data, DEFAULT_USER_ID);
+
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    console.error('Error fetching flashcards:', error);
+    return new Response(JSON.stringify({
+      error: 'Internal server error',
+      message: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
