@@ -52,7 +52,9 @@ Kryteria akceptacji:
 * Formularz logowania z e‑mailem i hasłem
 * Błędne dane wyświetlają komunikat o nieprawidłowym logowaniu
 * Po udanym logowaniu użytkownik przechodzi do pulpitu
-
+* Użytkownik nie może korzystać z funkcjonalnosci systemu bez logowania
+* Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym @Layout.astro 
+* Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
 
 US-003
 Tytuł: Wklejenie tekstu i generowanie fiszek AI
@@ -77,7 +79,6 @@ Opis: Użytkownik akceptuje lub odrzuca każdą z wygenerowanych fiszek
 Kryteria akceptacji:
 
 * Przyciski 'Akceptuj' i 'Odrzuć' przy każdej fiszce
-* Logowanie decyzji z timestampem
 * Akceptowane fiszki trafiają do biblioteki
 
 US-006
