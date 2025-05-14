@@ -58,13 +58,14 @@ Aplikacja będzie składać się z następujących głównych widoków:
 
 3. **Lista fiszek**
    - **Ścieżka**: `/flashcards`
-   - **Główny cel**: Zarządzanie istniejącymi fiszkami, umożliwienie edycji i usuwania
+   - **Główny cel**: Zarządzanie istniejącymi fiszkami, umożliwienie edycji, usuwania i tworzenia nowych fiszek
    - **Kluczowe informacje**: Lista wszystkich fiszek, opcje filtrowania i sortowania, formularze edycji
    - **Kluczowe komponenty**:
      - FlashcardsLayout (Astro)
      - FlashcardsList (React)
      - FlashcardItem (React)
-     - EditFlashcardModal, DeleteFlashcardButton (React)
+     - EditFlashcardModal (wspólny dla edycji i tworzenia), DeleteFlashcardButton (React)
+     - CreateFlashcardButton (React)
      - DataTable z paginacją (Shadcn/ui)
      - Dialog, Sheet dla formularzy edycji (Shadcn/ui)
      - AlertDialog dla potwierdzenia usunięcia (Shadcn/ui)

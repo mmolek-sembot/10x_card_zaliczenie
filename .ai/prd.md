@@ -104,7 +104,7 @@ Tytuł: Edycja istniejącej fiszki
 Opis: Użytkownik edytuje dowolną fiszkę z biblioteki
 Kryteria akceptacji:
 
-* Inline editing lub modal z polami pytanie i odpowiedź
+* Modal z polami pytanie i odpowiedź
 * Zapisanie zmian w bazie danych
 
 US-09
