@@ -5,6 +5,29 @@ import type { FlashcardsQuerySchemaType } from '../schemas/flashcards.schema';
 export class FlashcardsService {
   constructor(private supabase: SupabaseClient) {}
 
+  async getFlashcardById(id: number, userId: string): Promise<FlashcardDto | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from('flashcards')
+        .select('id, generation_id, front, back, source, created_at, updated_at')
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // Record not found
+          return null;
+        }
+        throw new Error(`Failed to fetch flashcard: ${error.message}`);
+      }
+
+      return data as FlashcardDto;
+    } catch (error) {
+      throw new Error(`Unexpected error fetching flashcard: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   async getFlashcards(params: FlashcardsQuerySchemaType, userId: string): Promise<FlashcardsPaginatedResponseDto> {
     const { page, limit, source, sort, order } = params;
     const offset = (page - 1) * limit;
