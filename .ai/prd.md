@@ -53,7 +53,7 @@ Kryteria akceptacji:
 * Błędne dane wyświetlają komunikat o nieprawidłowym logowaniu
 * Po udanym logowaniu użytkownik przechodzi do pulpitu
 * Użytkownik nie może korzystać z funkcjonalnosci systemu bez logowania
-* Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym @Layout.astro 
+* Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym @Navigation.astro 
 * Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
 
 US-003
