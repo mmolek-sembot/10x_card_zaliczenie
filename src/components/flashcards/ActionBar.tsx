@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { useFlashcards } from "@/hooks/useFlashcards";
 
-export function ActionBar() {
-  const { openCreateForm } = useFlashcards();
+interface ActionBarProps {
+  openCreateForm: () => void;
+}
 
+export function ActionBar({ openCreateForm }: ActionBarProps) {
   return (
     <div className="flex items-center gap-2">
       <Button onClick={openCreateForm} className="gap-2">

@@ -24,7 +24,7 @@ export function useFlashcards() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedFlashcard, setSelectedFlashcard] = useState<FlashcardDto | null>(null);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<FlashcardDto | undefined>(undefined);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -93,7 +93,7 @@ export function useFlashcards() {
       
       await fetchFlashcards(filters);
       setIsEditModalOpen(false);
-      setSelectedFlashcard(null);
+      setSelectedFlashcard(undefined);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -116,7 +116,7 @@ export function useFlashcards() {
       
       await fetchFlashcards(filters);
       setIsDeleteDialogOpen(false);
-      setSelectedFlashcard(null);
+      setSelectedFlashcard(undefined);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -142,7 +142,7 @@ export function useFlashcards() {
   };
 
   const openCreateForm = () => {
-    setSelectedFlashcard(null);
+    setSelectedFlashcard(undefined);
     setIsEditModalOpen(true);
   };
 

@@ -10,7 +10,9 @@ import BaseLayout from './Layout.astro';
     </header>
     
     <main>
-      <div id="flashcards-root"></div>
+      <div id="flashcards-root">
+        <slot />
+      </div>
     </main>
   </div>
 </BaseLayout>

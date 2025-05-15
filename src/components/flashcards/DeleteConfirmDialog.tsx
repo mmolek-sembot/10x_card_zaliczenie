@@ -13,7 +13,7 @@ import type { FlashcardDto } from "@/types";
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  flashcard: FlashcardDto | null;
+  flashcard: FlashcardDto | undefined;
   onConfirm: () => Promise<void>;
   isLoading: boolean;
 }

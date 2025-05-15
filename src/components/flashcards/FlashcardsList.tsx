@@ -1,9 +1,9 @@
 import { useFlashcards } from '@/hooks/useFlashcards';
 import { DataTable } from '@/components/ui/data-table';
-import { columns } from './columns';
-import { FilterBar } from './FilterBar';
-import { ActionBar } from './ActionBar';
-import { Pagination } from '@/components/ui/pagination';
+import { columns } from './columns.tsx';
+import { FilterBar } from './FilterBar.tsx';
+import { ActionBar } from './ActionBar.tsx';
+import { PaginationControl } from '@/components/ui/pagination-control';
 import { EditFlashcardModal } from './EditFlashcardModal';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -27,6 +27,7 @@ export function FlashcardsList() {
     handleLimitChange,
     handleSortChange,
     handleSourceFilterChange,
+    openCreateForm,
     setIsEditModalOpen,
     setIsDeleteDialogOpen,
   } = useFlashcards();
@@ -64,7 +65,7 @@ export function FlashcardsList() {
           onSourceChange={handleSourceFilterChange}
           onSortChange={handleSortChange}
         />
-        <ActionBar />
+        <ActionBar openCreateForm={openCreateForm} />
       </div>
 
       {isLoading && !flashcards.length ? (
@@ -75,13 +76,12 @@ export function FlashcardsList() {
         <DataTable
           columns={columns}
           data={flashcards}
-          isLoading={isLoading}
         />
       )}
 
       {flashcards.length > 0 && (
         <div className="flex justify-end">
-          <Pagination
+          <PaginationControl
             currentPage={pagination.page}
             totalPages={pagination.pages}
             onPageChange={handlePageChange}

@@ -119,7 +119,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // 4. Prepare response
     const response: CreateFlashcardsResponseDto = {
-      flashcards: createdFlashcards
+      flashcards: createdFlashcards.map(flashcard => ({
+        ...flashcard,
+        source: flashcard.source as FlashcardSource
+      }))
     };
 
     return new Response(JSON.stringify(response), {
