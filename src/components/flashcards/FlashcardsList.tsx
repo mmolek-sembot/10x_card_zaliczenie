@@ -1,6 +1,6 @@
 import { useFlashcards } from '@/hooks/useFlashcards';
 import { DataTable } from '@/components/ui/data-table';
-import { columns } from './columns.tsx';
+import { getColumns } from './columns.tsx';
 import { FilterBar } from './FilterBar.tsx';
 import { ActionBar } from './ActionBar.tsx';
 import { PaginationControl } from '@/components/ui/pagination-control';
@@ -28,9 +28,16 @@ export function FlashcardsList() {
     handleSortChange,
     handleSourceFilterChange,
     openCreateForm,
+    openEditForm,
+    openDeleteDialog,
     setIsEditModalOpen,
     setIsDeleteDialogOpen,
   } = useFlashcards();
+  
+  const columns = getColumns({
+    onEdit: openEditForm,
+    onDelete: openDeleteDialog,
+  });
 
   const handleCreateOrUpdate = async (data: CreateFlashcardInputDto) => {
     if (selectedFlashcard) {

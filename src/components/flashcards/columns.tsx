@@ -2,10 +2,14 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import { type FlashcardDto } from "@/types";
-import { useFlashcards } from "@/hooks/useFlashcards";
 import { Badge } from "@/components/ui/badge";
 
-export const columns: ColumnDef<FlashcardDto>[] = [
+interface ColumnsProps {
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+}
+
+export const getColumns = ({ onEdit, onDelete }: ColumnsProps): ColumnDef<FlashcardDto>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -56,21 +60,26 @@ export const columns: ColumnDef<FlashcardDto>[] = [
     id: "actions",
     cell: ({ row }) => {
       const flashcard = row.original;
-      const { openEditForm, openDeleteDialog } = useFlashcards();
-
+      
       return (
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => openEditForm(flashcard.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(flashcard.id);
+            }}
           >
             <Edit className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => openDeleteDialog(flashcard.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(flashcard.id);
+            }}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
