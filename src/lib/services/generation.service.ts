@@ -19,7 +19,7 @@ import type { ChatOptions, FlashcardCollectionContent } from '../services/openro
 export class GenerationService {
   private readonly supabase: SupabaseClient<Database>;
   private readonly openRouter;
-  private readonly model = 'deepseek/deepseek-chat-v3-0324:free'; // Default OpenRouter model
+  private readonly model = 'openai/gpt-4.1-nano'; // Default OpenRouter model
   private readonly aiRequestTimeout = 40000; // 40s timeout as specified in plan
 
   constructor(supabase: SupabaseClient<Database>) {
