@@ -24,10 +24,19 @@ export function PaginationControl({
   pageSize,
   onPageSizeChange,
 }: PaginationControlProps) {
-  const pageSizeOptions = [10, 20, 30, 50];
+  // Match the page size options with the schema's default limit (20)
+  const pageSizeOptions = [10, 20, 30, 50, 100];
+
+  // Ensure the current page size is one of the allowed values
+  React.useEffect(() => {
+    if (!pageSizeOptions.includes(pageSize)) {
+      onPageSizeChange(pageSizeOptions[0]);
+    }
+  }, [pageSize, onPageSizeChange, pageSizeOptions]);
 
   const handlePageSizeChange = (value: string) => {
-    onPageSizeChange(parseInt(value, 10));
+    const newPageSize = parseInt(value, 10);
+    onPageSizeChange(newPageSize);
   };
 
   return (
