@@ -5,7 +5,10 @@ import { EditFlashcardModal } from '@/components/flashcards/EditFlashcardModal';
 import { DeleteConfirmDialog } from '@/components/flashcards/DeleteConfirmDialog';
 ---
 
-<FlashcardsLayout>
+<FlashcardsLayout 
+  title="My Flashcards" 
+  description="View and manage your flashcard collection"
+>
   <FlashcardsList client:load>
     <EditFlashcardModal client:load />
     <DeleteConfirmDialog client:load />
