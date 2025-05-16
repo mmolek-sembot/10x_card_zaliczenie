@@ -1,0 +1,11 @@
+---
+import FlashcardsLayout from "@/layouts/FlashcardsLayout.astro";
+import { AuthForm } from "@/components/auth/AuthForm";
+import { LoginForm } from "@/components/auth/LoginForm";
+---
+
+<FlashcardsLayout title="Logowanie | 10xCard">
+  <AuthForm title="Logowanie" client:load>
+    <LoginForm client:load />
+  </AuthForm>
+</FlashcardsLayout>
