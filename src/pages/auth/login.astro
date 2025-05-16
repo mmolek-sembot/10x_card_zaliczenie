@@ -1,0 +1,20 @@
+---
+import FlashcardsLayout from "@/layouts/FlashcardsLayout.astro";
+import { AuthForm } from "@/components/auth/AuthForm";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { createSupabaseServerInstance } from "@/db/supabase.client";
+
+// Sprawdź czy użytkownik jest już zalogowany
+const supabase = createSupabaseServerInstance({ cookies: Astro.cookies, headers: Astro.request.headers });
+const { data: { session } } = await supabase.auth.getSession();
+
+if (session?.user) {
+  return Astro.redirect('/flashcards/generate');
+}
+---
+
+<FlashcardsLayout title="Logowanie | 10xCard">
+  <AuthForm title="Logowanie" client:load>
+    <LoginForm client:load />
+  </AuthForm>
+</FlashcardsLayout>

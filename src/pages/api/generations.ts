@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 import { generateFlashcardsSchema } from '../../lib/schemas/generation.schema';
 import { GenerationService } from '../../lib/services/generation.service';
-import { DEFAULT_USER_ID } from '../../db/supabase.client';
+
 
 export const prerender = false;
 
@@ -11,9 +11,12 @@ export const prerender = false;
  * Creates a new flashcard generation based on provided source text
  */
 export const POST: APIRoute = async ({ request, locals }) => {
-  // Get supabase client from locals
   const { supabase } = locals;
-  
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // Middleware gwarantuje, że session istnieje dla endpointów API
+  // TypeScript assertion ponieważ middleware sprawdza sesję
+  const user = session!.user;
 
   try {
     // Parse and validate request body
@@ -35,7 +38,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Process generation request using service
     const generationService = new GenerationService(supabase);
-    const result = await generationService.generateFlashcards(DEFAULT_USER_ID, validationResult.data);
+    const result = await generationService.generateFlashcards(user.id, validationResult.data);
 
     // Return successful response
     return new Response(
