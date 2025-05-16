@@ -57,7 +57,7 @@ export function FlashcardsList() {
     return (
       <Alert variant="destructive" className="mb-4">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>Error loading flashcards: {error}</AlertDescription>
+        <AlertDescription>Błąd ładowania fiszek: {error}</AlertDescription>
       </Alert>
     );
   }

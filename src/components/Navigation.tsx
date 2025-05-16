@@ -19,47 +19,47 @@ export function Navigation() {
               <span className="font-bold text-xl">10xCard</span>
             </a>
 
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <a href="/flashcards" className={navigationMenuTriggerStyle()}>
-                      Moje fiszki
-                    </a>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <a href="/flashcards/generate" className={navigationMenuTriggerStyle()}>
-                      Generuj nowe
-                    </a>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <a href="/flashcards" className={navigationMenuTriggerStyle()}>
+                    Moje fiszki
+                  </a>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <a href="/flashcards/generate" className={navigationMenuTriggerStyle()}>
+                    Generuj nowe
+                  </a>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           <div className="flex items-center gap-4">
-                <button
-                  onClick={async () => {
-                    try {
-                      const response = await fetch('/api/auth/logout', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                      });
+            <button
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
 
-                      if (!response.ok) {
-                        throw new Error('Błąd wylogowania');
-                      }
+                  if (!response.ok) {
+                    throw new Error('Błąd wylogowania');
+                  }
 
-                      // Przekierowanie na stronę logowania
-                      window.location.href = '/auth/login';
-                    } catch (error) {
-                      console.error('Błąd wylogowania:', error);
-                    }
-                  }}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                >
-                  Wyloguj
-                </button>
+                  // Przekierowanie na stronę logowania
+                  window.location.href = '/auth/login';
+                } catch (error) {
+                  console.error('Błąd wylogowania:', error);
+                }
+              }}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              Wyloguj
+            </button>
           </div>
         </div>
       </div>

@@ -76,7 +76,7 @@ export function PaginationControl({
         </PaginationContent>
       </Pagination>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Items per page</span>
+        <span className="text-sm text-muted-foreground">Elementów na stronę</span>
         <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
           <SelectTrigger className="w-[70px]">
             <SelectValue />

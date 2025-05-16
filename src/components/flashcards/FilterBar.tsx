@@ -34,13 +34,13 @@ export function FilterBar({ source, onSourceChange, onSortChange }: FilterBarPro
         }
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filter by source" />
+          <SelectValue placeholder="Filtruj wg źródła" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All sources</SelectItem>
-          <SelectItem value="ai-full">AI Generated</SelectItem>
-          <SelectItem value="ai-edited">AI Edited</SelectItem>
-          <SelectItem value="manual">Manual</SelectItem>
+          <SelectItem value="all">Wszystkie źródła</SelectItem>
+          <SelectItem value="ai-full">AI</SelectItem>
+          <SelectItem value="ai-edited">AI - edytowane</SelectItem>
+          <SelectItem value="manual">Ręcznie utworzone</SelectItem>
         </SelectContent>
       </Select>
 
@@ -52,14 +52,14 @@ export function FilterBar({ source, onSourceChange, onSortChange }: FilterBarPro
         defaultValue="created_at-desc"
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Sort by" />
+          <SelectValue placeholder="Sortuj według" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="created_at-desc">Newest first</SelectItem>
-          <SelectItem value="created_at-asc">Oldest first</SelectItem>
-          <SelectItem value="updated_at-desc">Last updated</SelectItem>
-          <SelectItem value="id-asc">ID ascending</SelectItem>
-          <SelectItem value="id-desc">ID descending</SelectItem>
+          <SelectItem value="created_at-desc">Od najnowszych</SelectItem>
+          <SelectItem value="created_at-asc">Od najstarszych</SelectItem>
+          <SelectItem value="updated_at-desc">Ostatnio aktualizowane</SelectItem>
+          <SelectItem value="id-asc">ID rosnąco</SelectItem>
+          <SelectItem value="id-desc">ID malejąco</SelectItem>
         </SelectContent>
       </Select>
     </div>

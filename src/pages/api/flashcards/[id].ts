@@ -28,7 +28,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
     if (!locals.supabase || !locals.user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -89,7 +89,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     if (!locals.supabase || !locals.user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -155,7 +155,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     if (!locals.supabase || !locals.user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 

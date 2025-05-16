@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const { email, password } = await request.json();
 
     const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
-    
+
     // Register the user
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -14,10 +14,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (signUpError) {
-      return new Response(
-        JSON.stringify({ error: 'Błąd rejestracji' }), 
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: 'Błąd rejestracji' }), { status: 400 });
     }
 
     // Automatically sign in after registration
@@ -27,10 +24,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (signInError) {
-      return new Response(
-        JSON.stringify({ error: 'Błąd logowania po rejestracji' }), 
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: 'Błąd logowania po rejestracji' }), {
+        status: 400,
+      });
     }
 
     return new Response(
@@ -41,9 +37,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       { status: 200 }
     );
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: 'Błąd serwera' }), 
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Błąd serwera' }), { status: 500 });
   }
 };

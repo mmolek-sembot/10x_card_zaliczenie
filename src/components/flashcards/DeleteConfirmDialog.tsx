@@ -39,25 +39,25 @@ export function DeleteConfirmDialog({
     <AlertDialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Flashcard</AlertDialogTitle>
+          <AlertDialogTitle>Usuń fiszkę</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this flashcard? This action cannot be undone.
+            Czy na pewno chcesz usunąć tę fiszkę? Tej operacji nie można cofnąć.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="mt-4 rounded-md bg-muted p-4">
-          <p className="font-medium">Front:</p>
+          <p className="font-medium">Przód:</p>
           <p className="mt-1 text-sm text-muted-foreground">{flashcard.front}</p>
-          <p className="mt-3 font-medium">Back:</p>
+          <p className="mt-3 font-medium">Tył:</p>
           <p className="mt-1 text-sm text-muted-foreground">{flashcard.back}</p>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>Anuluj</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isLoading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isLoading ? 'Deleting...' : 'Delete'}
+            {isLoading ? 'Usuwanie...' : 'Usuń'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

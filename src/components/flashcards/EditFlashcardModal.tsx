@@ -25,12 +25,12 @@ import type { FlashcardDto, CreateFlashcardInputDto } from '@/types';
 const formSchema = z.object({
   front: z
     .string()
-    .min(1, 'Front content is required')
-    .max(200, 'Front content must be at most 200 characters'),
+    .min(1, 'Zawartość przodu jest wymagana')
+    .max(200, 'Zawartość przodu może mieć maksymalnie 200 znaków'),
   back: z
     .string()
-    .min(1, 'Back content is required')
-    .max(600, 'Back content must be at most 600 characters'),
+    .min(1, 'Zawartość tyłu jest wymagana')
+    .max(600, 'Zawartość tyłu może mieć maksymalnie 600 znaków'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -89,7 +89,7 @@ export function EditFlashcardModal({
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px] bg-white">
         <DialogHeader>
-          <DialogTitle>{flashcard ? 'Edit Flashcard' : 'Create New Flashcard'}</DialogTitle>
+          <DialogTitle>{flashcard ? 'Edytuj fiszkę' : 'Utwórz nową fiszkę'}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -99,9 +99,9 @@ export function EditFlashcardModal({
               name="front"
               render={({ field }: { field: any }) => (
                 <FormItem>
-                  <FormLabel>Front</FormLabel>
+                  <FormLabel>Przód</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Enter the front content" className="h-24" {...field} />
+                    <Textarea placeholder="Wprowadź zawartość przodu" className="h-24" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,9 +113,9 @@ export function EditFlashcardModal({
               name="back"
               render={({ field }: { field: any }) => (
                 <FormItem>
-                  <FormLabel>Back</FormLabel>
+                  <FormLabel>Tył</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Enter the back content" className="h-32" {...field} />
+                    <Textarea placeholder="Wprowadź zawartość tyłu" className="h-32" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,10 +124,10 @@ export function EditFlashcardModal({
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-                Cancel
+                Anuluj
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Saving...' : flashcard ? 'Save Changes' : 'Create'}
+                {isLoading ? 'Zapisywanie...' : flashcard ? 'Zapisz zmiany' : 'Utwórz'}
               </Button>
             </DialogFooter>
           </form>

@@ -17,23 +17,27 @@ export const getColumns = ({ onEdit, onDelete }: ColumnsProps): ColumnDef<Flashc
   },
   {
     accessorKey: 'front',
-    header: 'Front',
+    header: 'Przód',
     cell: ({ row }) => <div className="max-w-[300px] truncate">{row.getValue('front')}</div>,
   },
   {
     accessorKey: 'back',
-    header: 'Back',
+    header: 'Tył',
     cell: ({ row }) => <div className="max-w-[300px] truncate">{row.getValue('back')}</div>,
   },
   {
     accessorKey: 'source',
-    header: 'Source',
+    header: 'Źródło',
     cell: ({ row }) => {
       const source = row.getValue('source') as string;
       const variant =
         source === 'manual' ? 'default' : source === 'ai-full' ? 'secondary' : 'outline';
       const label =
-        source === 'manual' ? 'Manual' : source === 'ai-full' ? 'AI Generated' : 'AI Edited';
+        source === 'manual'
+          ? 'Ręcznie utworzone'
+          : source === 'ai-full'
+            ? 'AI'
+            : 'AI - edytowane';
 
       return (
         <Badge variant={variant} className="capitalize">
@@ -44,7 +48,7 @@ export const getColumns = ({ onEdit, onDelete }: ColumnsProps): ColumnDef<Flashc
   },
   {
     accessorKey: 'created_at',
-    header: 'Created',
+    header: 'Utworzone',
     cell: ({ row }) => {
       const date = new Date(row.getValue('created_at'));
       return <div>{date.toLocaleDateString()}</div>;
