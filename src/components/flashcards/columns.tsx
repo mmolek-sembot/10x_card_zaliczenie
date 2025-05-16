@@ -33,11 +33,7 @@ export const getColumns = ({ onEdit, onDelete }: ColumnsProps): ColumnDef<Flashc
       const variant =
         source === 'manual' ? 'default' : source === 'ai-full' ? 'secondary' : 'outline';
       const label =
-        source === 'manual'
-          ? 'Ręcznie utworzone'
-          : source === 'ai-full'
-            ? 'AI'
-            : 'AI - edytowane';
+        source === 'manual' ? 'Ręcznie utworzone' : source === 'ai-full' ? 'AI' : 'AI - edytowane';
 
       return (
         <Badge variant={variant} className="capitalize">
