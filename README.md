@@ -42,6 +42,9 @@ Key features include:
   - Supabase (PostgreSQL, Authentication, SDK)  
 - **AI Integration**  
   - Openrouter.ai (supports OpenAI, Anthropic, Google models)  
+- **Testing**  
+  - **Unit Tests:** Vitest, React Testing Library, Jest  
+  - **E2E Tests:** Playwright, Cypress  
 - **CI/CD & Hosting**  
   - GitHub Actions  
   - Docker on DigitalOcean  
