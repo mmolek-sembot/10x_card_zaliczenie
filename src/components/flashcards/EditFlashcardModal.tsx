@@ -87,7 +87,7 @@ export function EditFlashcardModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-white">
         <DialogHeader>
           <DialogTitle>{flashcard ? 'Edit Flashcard' : 'Create New Flashcard'}</DialogTitle>
         </DialogHeader>

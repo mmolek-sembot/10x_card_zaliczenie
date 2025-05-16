@@ -1,5 +1,17 @@
 ---
 import { Navigation } from './Navigation';
+import { createSupabaseServerInstance } from '@/db/supabase.client';
+
+// Sprawdź czy użytkownik jest już zalogowany
+const supabase = createSupabaseServerInstance({
+  cookies: Astro.cookies,
+  headers: Astro.request.headers,
+});
+const {
+  data: { session },
+} = await supabase.auth.getSession();
+
+const showNavigation = session?.user;
 ---
 
-<Navigation client:load />
+{showNavigation && <Navigation client:load />}
