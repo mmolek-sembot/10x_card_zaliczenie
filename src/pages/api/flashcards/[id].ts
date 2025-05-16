@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { APIRoute } from 'astro';
 import { FlashcardsService } from '../../../lib/services/flashcards.service';
-import { DEFAULT_USER_ID } from '../../../db/supabase.client';
+
 import type { UpdateFlashcardCommand } from '../../../types';
 
 // Disable static pre-rendering for dynamic API route
@@ -25,12 +25,12 @@ const updateFlashcardSchema = z
 export const GET: APIRoute = async ({ params, locals }) => {
   try {
     // Early return if no Supabase client or user
-    // if (!locals.supabase || !locals.user) {
-    //   return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-    //     status: 401,
-    //     headers: { 'Content-Type': 'application/json' }
-    //   });
-    // }
+    if (!locals.supabase || !locals.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Validate ID parameter
     const result = flashcardIdSchema.safeParse({ id: params.id });
@@ -49,7 +49,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
 
     // Initialize service and fetch flashcard
     const flashcardsService = new FlashcardsService(locals.supabase);
-    const flashcard = await flashcardsService.getFlashcardById(result.data.id, DEFAULT_USER_ID);
+    const flashcard = await flashcardsService.getFlashcardById(result.data.id, locals.user.id);
 
     // Return 404 if flashcard not found
     if (!flashcard) {
@@ -86,12 +86,12 @@ export const GET: APIRoute = async ({ params, locals }) => {
 export const DELETE: APIRoute = async ({ params, locals }) => {
   try {
     // Early return if no Supabase client or user
-    // if (!locals.supabase || !locals.user) {
-    //   return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-    //     status: 401,
-    //     headers: { 'Content-Type': 'application/json' }
-    //   });
-    // }
+    if (!locals.supabase || !locals.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Validate ID parameter
     const result = flashcardIdSchema.safeParse({ id: params.id });
@@ -116,7 +116,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
 
     // Initialize service and delete flashcard
     const flashcardsService = new FlashcardsService(locals.supabase);
-    const deleted = await flashcardsService.deleteFlashcard(result.data.id, DEFAULT_USER_ID);
+    const deleted = await flashcardsService.deleteFlashcard(result.data.id, locals.user.id);
 
     // Return 404 if flashcard not found
     if (!deleted) {
@@ -152,12 +152,12 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
 export const PUT: APIRoute = async ({ params, request, locals }) => {
   try {
     // Early return if no Supabase client or user
-    // if (!locals.supabase || !locals.user) {
-    //   return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-    //     status: 401,
-    //     headers: { 'Content-Type': 'application/json' }
-    //   });
-    // }
+    if (!locals.supabase || !locals.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Validate ID parameter
     const idResult = flashcardIdSchema.safeParse({ id: params.id });
@@ -177,7 +177,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     // Log incoming request
     console.info('Processing PUT /api/flashcards/:id request:', {
       flashcardId: params.id,
-      userId: DEFAULT_USER_ID,
+      userId: locals.user.id,
       timestamp: new Date().toISOString(),
     });
 
@@ -225,7 +225,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     try {
       const updatedFlashcard = await flashcardsService.updateFlashcard(
         idResult.data.id,
-        DEFAULT_USER_ID,
+        locals.user.id,
         updateResult.data
       );
 
@@ -233,7 +233,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       if (!updatedFlashcard) {
         console.warn('Flashcard not found:', {
           flashcardId: idResult.data.id,
-          userId: DEFAULT_USER_ID,
+          userId: locals.user.id,
         });
         return new Response(
           JSON.stringify({
@@ -264,7 +264,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       console.error('Error in PUT /api/flashcards/:id:', {
         error,
         flashcardId: idResult.data.id,
-        userId: DEFAULT_USER_ID,
+        userId: locals.user.id,
         status,
       });
 

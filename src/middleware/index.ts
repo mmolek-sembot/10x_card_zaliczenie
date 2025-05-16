@@ -8,13 +8,19 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     headers: context.request.headers,
   });
 
-  // Add instance to locals
+  // Add instance and user to locals
   context.locals.supabase = supabase;
 
   // Get current session
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  
+  // Add user to locals if session exists
+  context.locals.user = session?.user ? {
+    id: session.user.id,
+    email: session.user.email
+  } : null;
 
   // Define public paths that don't require authentication
   const publicPaths = ['/auth/login', '/auth/register', '/auth/reset-password', '/api/auth'];
