@@ -5,8 +5,9 @@ on:
   workflow_dispatch:
   # Trigger on push to master branch
   push:
-    branches:
-      - master
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   test-and-build:
