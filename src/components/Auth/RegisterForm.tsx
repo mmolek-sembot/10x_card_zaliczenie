@@ -32,12 +32,11 @@ const registerSchema = z
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-interface RegisterFormProps {
-  onSubmit: (data: RegisterFormData) => Promise<void>;
-  isLoading?: boolean;
-}
+interface RegisterFormProps {}
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -49,7 +48,44 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(async (data) => {
+          try {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+              throw new Error(result.error || 'Błąd rejestracji');
+            }
+
+            // Przekierowanie po udanej rejestracji
+            window.location.href = '/flashcards/generate';
+          } catch (err) {
+            setError(err instanceof Error ? err.message : 'Błąd rejestracji');
+          } finally {
+            setIsLoading(false);
+          }
+        })}
+        className="space-y-6"
+      >
+        {error && (
+          <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded">
+            {error}
+          </div>
+        )}
         <FormField
           control={form.control}
           name="email"
