@@ -1,7 +1,7 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Mail } from "lucide-react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Mail } from 'lucide-react';
 
 interface EmailVerificationProps {
   email: string;
@@ -20,15 +20,15 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
         <div className="flex justify-center mb-4">
           <Mail className="h-12 w-12 text-primary" />
         </div>
-        
+
         <h1 className="text-2xl font-bold mb-4">Zweryfikuj swój email</h1>
-        
+
         <p className="mb-6 text-muted-foreground">
           Wysłaliśmy link weryfikacyjny na adres:
           <br />
           <span className="font-medium text-foreground">{email}</span>
         </p>
-        
+
         <div className="space-y-4">
           <Button
             variant="outline"
@@ -36,9 +36,9 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
             onClick={onResendVerification}
             disabled={isResending}
           >
-            {isResending ? "Wysyłanie..." : "Wyślij link ponownie"}
+            {isResending ? 'Wysyłanie...' : 'Wyślij link ponownie'}
           </Button>
-          
+
           <p className="text-sm text-muted-foreground">
             <a href="/auth/login" className="text-primary hover:underline">
               Powrót do logowania

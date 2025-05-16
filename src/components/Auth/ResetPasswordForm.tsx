@@ -1,8 +1,8 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,25 +11,22 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, "Hasło musi mieć minimum 8 znaków")
-      .regex(/[A-Z]/, "Hasło musi zawierać przynajmniej jedną wielką literę")
-      .regex(/[0-9]/, "Hasło musi zawierać przynajmniej jedną cyfrę")
-      .regex(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Hasło musi zawierać przynajmniej jeden znak specjalny"
-      ),
+      .min(8, 'Hasło musi mieć minimum 8 znaków')
+      .regex(/[A-Z]/, 'Hasło musi zawierać przynajmniej jedną wielką literę')
+      .regex(/[0-9]/, 'Hasło musi zawierać przynajmniej jedną cyfrę')
+      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Hasło musi zawierać przynajmniej jeden znak specjalny'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła nie są identyczne",
-    path: ["confirmPassword"],
+    message: 'Hasła nie są identyczne',
+    path: ['confirmPassword'],
   });
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
@@ -39,15 +36,12 @@ interface ResetPasswordFormProps {
   isLoading?: boolean;
 }
 
-export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
-  onSubmit,
-  isLoading,
-}) => {
+export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ onSubmit, isLoading }) => {
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -96,7 +90,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Zapisywanie..." : "Ustaw nowe hasło"}
+          {isLoading ? 'Zapisywanie...' : 'Ustaw nowe hasło'}
         </Button>
       </form>
     </Form>

@@ -14,7 +14,9 @@ export function useSession() {
     });
 
     // Nasłuchuj na zmiany w sesji
-    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 

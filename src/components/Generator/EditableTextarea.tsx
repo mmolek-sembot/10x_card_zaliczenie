@@ -1,5 +1,5 @@
-import React from "react";
-import { Textarea } from "@/components/ui/textarea";
+import React from 'react';
+import { Textarea } from '@/components/ui/textarea';
 
 interface EditableTextareaProps {
   value: string;
@@ -18,11 +18,11 @@ export const EditableTextarea: React.FC<EditableTextareaProps> = ({
   placeholder,
   label,
   error,
-  rows = 3
+  rows = 3,
 }) => {
   const charCount = value.length;
   const isExceeding = charCount > maxLength;
-  
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
@@ -31,7 +31,7 @@ export const EditableTextarea: React.FC<EditableTextareaProps> = ({
           {charCount}/{maxLength}
         </span>
       </div>
-      
+
       <Textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -39,10 +39,8 @@ export const EditableTextarea: React.FC<EditableTextareaProps> = ({
         rows={rows}
         className={`${error ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
       />
-      
-      {error && (
-        <p className="text-red-500 text-xs mt-1">{error}</p>
-      )}
+
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   );
-}; 
+};

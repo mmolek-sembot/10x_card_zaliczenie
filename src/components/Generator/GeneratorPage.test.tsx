@@ -13,29 +13,41 @@ vi.mock('./useGeneratorState', () => ({
 vi.mock('./GenerationForm', () => ({
   GenerationForm: ({ onGenerate, onSourceTextChange }: any) => (
     <div data-testid="generation-form">
-      <button data-testid="generate-button" onClick={onGenerate}>Generate</button>
-      <input 
-        data-testid="source-text-input" 
-        onChange={(e) => onSourceTextChange(e.target.value)} 
-      />
+      <button data-testid="generate-button" onClick={onGenerate}>
+        Generate
+      </button>
+      <input data-testid="source-text-input" onChange={(e) => onSourceTextChange(e.target.value)} />
     </div>
   ),
 }));
 
 vi.mock('./GenerationResults', () => ({
-  GenerationResults: ({ 
-    onUpdateFlashcard, 
-    onAcceptFlashcard, 
-    onRejectFlashcard, 
-    onSaveAccepted, 
-    onReset 
+  GenerationResults: ({
+    onUpdateFlashcard,
+    onAcceptFlashcard,
+    onRejectFlashcard,
+    onSaveAccepted,
+    onReset,
   }: any) => (
     <div data-testid="generation-results">
-      <button data-testid="update-flashcard" onClick={() => onUpdateFlashcard(1, { front: 'Updated' })}>Update</button>
-      <button data-testid="accept-flashcard" onClick={() => onAcceptFlashcard(1)}>Accept</button>
-      <button data-testid="reject-flashcard" onClick={() => onRejectFlashcard(1)}>Reject</button>
-      <button data-testid="save-flashcards" onClick={onSaveAccepted}>Save</button>
-      <button data-testid="reset-button" onClick={onReset}>Reset</button>
+      <button
+        data-testid="update-flashcard"
+        onClick={() => onUpdateFlashcard(1, { front: 'Updated' })}
+      >
+        Update
+      </button>
+      <button data-testid="accept-flashcard" onClick={() => onAcceptFlashcard(1)}>
+        Accept
+      </button>
+      <button data-testid="reject-flashcard" onClick={() => onRejectFlashcard(1)}>
+        Reject
+      </button>
+      <button data-testid="save-flashcards" onClick={onSaveAccepted}>
+        Save
+      </button>
+      <button data-testid="reset-button" onClick={onReset}>
+        Reset
+      </button>
     </div>
   ),
 }));
@@ -57,7 +69,7 @@ describe('GeneratorPage', () => {
     acceptFlashcard: vi.fn(),
     rejectFlashcard: vi.fn(),
     saveAcceptedFlashcards: vi.fn(),
-    reset: vi.fn()
+    reset: vi.fn(),
   };
 
   beforeEach(() => {
@@ -68,7 +80,7 @@ describe('GeneratorPage', () => {
   it('should render in input state', () => {
     // Arrange & Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.getByTestId('generation-form')).toBeInTheDocument();
     expect(screen.queryByTestId('generation-results')).not.toBeInTheDocument();
@@ -78,12 +90,12 @@ describe('GeneratorPage', () => {
     // Arrange
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
-      state: 'generating'
+      state: 'generating',
     });
-    
+
     // Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.getByTestId('generation-form')).toBeInTheDocument();
     expect(screen.queryByTestId('generation-results')).not.toBeInTheDocument();
@@ -94,12 +106,12 @@ describe('GeneratorPage', () => {
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
       state: 'review',
-      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'pending', errors: {} }]
+      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'pending', errors: {} }],
     });
-    
+
     // Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.queryByTestId('generation-form')).not.toBeInTheDocument();
     expect(screen.getByTestId('generation-results')).toBeInTheDocument();
@@ -110,12 +122,12 @@ describe('GeneratorPage', () => {
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
       state: 'saving',
-      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'accepted', errors: {} }]
+      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'accepted', errors: {} }],
     });
-    
+
     // Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.queryByTestId('generation-form')).not.toBeInTheDocument();
     expect(screen.getByTestId('generation-results')).toBeInTheDocument();
@@ -126,12 +138,12 @@ describe('GeneratorPage', () => {
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
       state: 'complete',
-      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'accepted', errors: {} }]
+      flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'accepted', errors: {} }],
     });
-    
+
     // Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.queryByTestId('generation-form')).not.toBeInTheDocument();
     expect(screen.getByTestId('generation-results')).toBeInTheDocument();
@@ -142,12 +154,12 @@ describe('GeneratorPage', () => {
     const errorMessage = 'Test error message';
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
-      error: errorMessage
+      error: errorMessage,
     });
-    
+
     // Act
     render(<GeneratorPage />);
-    
+
     // Assert
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
@@ -157,13 +169,13 @@ describe('GeneratorPage', () => {
     const mockGenerate = vi.fn();
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
-      generateFlashcards: mockGenerate
+      generateFlashcards: mockGenerate,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('generate-button'));
-    
+
     // Assert
     expect(mockGenerate).toHaveBeenCalledTimes(1);
   });
@@ -173,13 +185,13 @@ describe('GeneratorPage', () => {
     const mockSetSourceText = vi.fn();
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
-      setSourceText: mockSetSourceText
+      setSourceText: mockSetSourceText,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.change(screen.getByTestId('source-text-input'), { target: { value: 'New text' } });
-    
+
     // Assert
     expect(mockSetSourceText).toHaveBeenCalledWith('New text');
   });
@@ -191,13 +203,13 @@ describe('GeneratorPage', () => {
       ...mockGeneratorState,
       state: 'review',
       flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'pending', errors: {} }],
-      updateFlashcard: mockUpdateFlashcard
+      updateFlashcard: mockUpdateFlashcard,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('update-flashcard'));
-    
+
     // Assert
     expect(mockUpdateFlashcard).toHaveBeenCalledWith(1, { front: 'Updated' });
   });
@@ -209,13 +221,13 @@ describe('GeneratorPage', () => {
       ...mockGeneratorState,
       state: 'review',
       flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'pending', errors: {} }],
-      acceptFlashcard: mockAcceptFlashcard
+      acceptFlashcard: mockAcceptFlashcard,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('accept-flashcard'));
-    
+
     // Assert
     expect(mockAcceptFlashcard).toHaveBeenCalledWith(1);
   });
@@ -227,13 +239,13 @@ describe('GeneratorPage', () => {
       ...mockGeneratorState,
       state: 'review',
       flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'pending', errors: {} }],
-      rejectFlashcard: mockRejectFlashcard
+      rejectFlashcard: mockRejectFlashcard,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('reject-flashcard'));
-    
+
     // Assert
     expect(mockRejectFlashcard).toHaveBeenCalledWith(1);
   });
@@ -245,13 +257,13 @@ describe('GeneratorPage', () => {
       ...mockGeneratorState,
       state: 'review',
       flashcards: [{ id: 1, front: 'Q', back: 'A', status: 'accepted', errors: {} }],
-      saveAcceptedFlashcards: mockSaveAcceptedFlashcards
+      saveAcceptedFlashcards: mockSaveAcceptedFlashcards,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('save-flashcards'));
-    
+
     // Assert
     expect(mockSaveAcceptedFlashcards).toHaveBeenCalledTimes(1);
   });
@@ -262,13 +274,13 @@ describe('GeneratorPage', () => {
     (useGeneratorState as any).mockReturnValue({
       ...mockGeneratorState,
       state: 'complete',
-      reset: mockReset
+      reset: mockReset,
     });
-    
+
     // Act
     render(<GeneratorPage />);
     fireEvent.click(screen.getByTestId('reset-button'));
-    
+
     // Assert
     expect(mockReset).toHaveBeenCalledTimes(1);
   });

@@ -33,7 +33,7 @@ export function FlashcardsList() {
     setIsEditModalOpen,
     setIsDeleteDialogOpen,
   } = useFlashcards();
-  
+
   const columns = getColumns({
     onEdit: openEditForm,
     onDelete: openDeleteDialog,
@@ -57,9 +57,7 @@ export function FlashcardsList() {
     return (
       <Alert variant="destructive" className="mb-4">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Error loading flashcards: {error}
-        </AlertDescription>
+        <AlertDescription>Error loading flashcards: {error}</AlertDescription>
       </Alert>
     );
   }
@@ -80,10 +78,7 @@ export function FlashcardsList() {
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       ) : (
-        <DataTable
-          columns={columns}
-          data={flashcards}
-        />
+        <DataTable columns={columns} data={flashcards} />
       )}
 
       {flashcards.length > 0 && (

@@ -1,6 +1,12 @@
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { FlashcardSource } from "@/types";
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { FlashcardSource } from '@/types';
 
 interface FilterBarProps {
   source?: FlashcardSource;
@@ -20,10 +26,12 @@ export function FilterBar({ source, onSourceChange, onSortChange }: FilterBarPro
           console.log('Search:', e.target.value);
         }}
       /> */}
-      
+
       <Select
         value={source || 'all'}
-        onValueChange={(value: string) => onSourceChange(value === 'all' ? undefined : value as FlashcardSource)}
+        onValueChange={(value: string) =>
+          onSourceChange(value === 'all' ? undefined : (value as FlashcardSource))
+        }
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Filter by source" />

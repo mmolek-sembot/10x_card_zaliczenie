@@ -7,8 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import type { FlashcardDto } from "@/types";
+} from '@/components/ui/alert-dialog';
+import type { FlashcardDto } from '@/types';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -41,8 +41,7 @@ export function DeleteConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Flashcard</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this flashcard? This action cannot be
-            undone.
+            Are you sure you want to delete this flashcard? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="mt-4 rounded-md bg-muted p-4">
@@ -58,7 +57,7 @@ export function DeleteConfirmDialog({
             disabled={isLoading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isLoading ? "Deleting..." : "Delete"}
+            {isLoading ? 'Deleting...' : 'Delete'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

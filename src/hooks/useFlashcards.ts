@@ -6,7 +6,7 @@ import type {
   CreateFlashcardInputDto,
   UpdateFlashcardCommand,
   PaginationMetaDto,
-  FlashcardSource
+  FlashcardSource,
 } from '@/types';
 
 export function useFlashcards() {
@@ -16,11 +16,11 @@ export function useFlashcards() {
     total: 0,
     page: 1,
     limit: 20,
-    pages: 0
+    pages: 0,
   });
   const [filters, setFilters] = useState<FlashcardQueryParams>({
     page: 1,
-    limit: 20
+    limit: 20,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,12 +36,12 @@ export function useFlashcards() {
       const queryString = new URLSearchParams(
         Object.entries(params).filter(([_, v]) => v !== undefined) as [string, string][]
       ).toString();
-      
+
       const response = await fetch(`/api/flashcards?${queryString}`);
       if (!response.ok) {
         throw new Error('Failed to fetch flashcards');
       }
-      
+
       const data: FlashcardsPaginatedResponseDto = await response.json();
       setFlashcards(data.data);
       setPagination(data.pagination);
@@ -60,13 +60,13 @@ export function useFlashcards() {
       const response = await fetch('/api/flashcards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ flashcards: [data] })
+        body: JSON.stringify({ flashcards: [data] }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to create flashcard');
       }
-      
+
       await fetchFlashcards(filters);
       setIsEditModalOpen(false);
     } catch (err) {
@@ -84,13 +84,13 @@ export function useFlashcards() {
       const response = await fetch(`/api/flashcards/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to update flashcard');
       }
-      
+
       await fetchFlashcards(filters);
       setIsEditModalOpen(false);
       setSelectedFlashcard(undefined);
@@ -107,13 +107,13 @@ export function useFlashcards() {
     setError(null);
     try {
       const response = await fetch(`/api/flashcards/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to delete flashcard');
       }
-      
+
       await fetchFlashcards(filters);
       setIsDeleteDialogOpen(false);
       setSelectedFlashcard(undefined);
@@ -126,19 +126,19 @@ export function useFlashcards() {
 
   // UI handlers
   const handlePageChange = (page: number) => {
-    setFilters(prev => ({ ...prev, page }));
+    setFilters((prev) => ({ ...prev, page }));
   };
 
   const handleLimitChange = (limit: number) => {
-    setFilters(prev => ({ ...prev, limit, page: 1 }));
+    setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
   const handleSortChange = (sort: string, order: 'asc' | 'desc') => {
-    setFilters(prev => ({ ...prev, sort: sort as 'created_at' | 'updated_at' | 'id', order }));
+    setFilters((prev) => ({ ...prev, sort: sort as 'created_at' | 'updated_at' | 'id', order }));
   };
 
   const handleSourceFilterChange = (source?: FlashcardSource) => {
-    setFilters(prev => ({ ...prev, source, page: 1 }));
+    setFilters((prev) => ({ ...prev, source, page: 1 }));
   };
 
   const openCreateForm = () => {
@@ -147,7 +147,7 @@ export function useFlashcards() {
   };
 
   const openEditForm = (id: number) => {
-    const flashcard = flashcards.find(f => f.id === id);
+    const flashcard = flashcards.find((f) => f.id === id);
     if (flashcard) {
       setSelectedFlashcard(flashcard);
       setIsEditModalOpen(true);
@@ -155,7 +155,7 @@ export function useFlashcards() {
   };
 
   const openDeleteDialog = (id: number) => {
-    const flashcard = flashcards.find(f => f.id === id);
+    const flashcard = flashcards.find((f) => f.id === id);
     if (flashcard) {
       setSelectedFlashcard(flashcard);
       setIsDeleteDialogOpen(true);
@@ -187,6 +187,6 @@ export function useFlashcards() {
     openEditForm,
     openDeleteDialog,
     setIsEditModalOpen,
-    setIsDeleteDialogOpen
+    setIsDeleteDialogOpen,
   };
 }

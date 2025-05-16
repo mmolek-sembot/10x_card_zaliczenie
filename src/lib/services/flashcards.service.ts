@@ -1,5 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { FlashcardDto, FlashcardsPaginatedResponseDto, UpdateFlashcardCommand } from '../../types';
+import type {
+  FlashcardDto,
+  FlashcardsPaginatedResponseDto,
+  UpdateFlashcardCommand,
+} from '../../types';
 import type { FlashcardsQuerySchemaType } from '../schemas/flashcards.schema';
 
 export class FlashcardsService {
@@ -12,40 +16,42 @@ export class FlashcardsService {
       if (!flashcard) {
         return false;
       }
-      
+
       // Usuń fiszkę
       const { error } = await this.supabase
         .from('flashcards')
         .delete()
         .eq('id', id)
         .eq('user_id', userId);
-      
+
       if (error) {
         console.error('Database error while deleting flashcard:', {
           error,
           flashcardId: id,
-          userId
+          userId,
         });
         throw new Error(`Failed to delete flashcard: ${error.message}`);
       }
-      
+
       // Logowanie pomyślnego usunięcia
       console.info('Flashcard deleted successfully:', {
         flashcardId: id,
         userId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       return true;
     } catch (error) {
       console.error('Unexpected error in deleteFlashcard:', {
         error,
         flashcardId: id,
         userId,
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
-      
-      throw new Error(`Unexpected error deleting flashcard: ${error instanceof Error ? error.message : String(error)}`);
+
+      throw new Error(
+        `Unexpected error deleting flashcard: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -68,11 +74,16 @@ export class FlashcardsService {
 
       return data as FlashcardDto;
     } catch (error) {
-      throw new Error(`Unexpected error fetching flashcard: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Unexpected error fetching flashcard: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
-  async getFlashcards(params: FlashcardsQuerySchemaType, userId: string): Promise<FlashcardsPaginatedResponseDto> {
+  async getFlashcards(
+    params: FlashcardsQuerySchemaType,
+    userId: string
+  ): Promise<FlashcardsPaginatedResponseDto> {
     const { page, limit, source, sort, order } = params;
     const offset = (page - 1) * limit;
 
@@ -111,8 +122,8 @@ export class FlashcardsService {
         total,
         page,
         limit,
-        pages
-      }
+        pages,
+      },
     };
   }
 
@@ -132,7 +143,7 @@ export class FlashcardsService {
       const updateData: Partial<FlashcardDto> = {
         ...command,
         // If source was 'ai-full', change it to 'ai-edited'
-        ...(currentFlashcard.source === 'ai-full' && { source: 'ai-edited' as const })
+        ...(currentFlashcard.source === 'ai-full' && { source: 'ai-edited' as const }),
       };
 
       // Update the flashcard
@@ -150,7 +161,7 @@ export class FlashcardsService {
           error,
           flashcardId: id,
           userId,
-          updateData
+          updateData,
         });
 
         // Handle specific error cases
@@ -173,7 +184,7 @@ export class FlashcardsService {
         flashcardId: id,
         userId,
         newSource: data.source,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       return data as FlashcardDto;
@@ -183,10 +194,12 @@ export class FlashcardsService {
         error,
         flashcardId: id,
         userId,
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       });
 
-      throw new Error(`Unexpected error updating flashcard: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Unexpected error updating flashcard: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 }

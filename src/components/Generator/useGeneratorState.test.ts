@@ -37,30 +37,30 @@ describe('useGeneratorState', () => {
   it('should validate text length correctly', () => {
     // Arrange
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Act - text too short
     act(() => {
       result.current.setSourceText('Short text');
     });
-    
+
     // Assert
     expect(result.current.isTextValid).toBe(false);
-    
+
     // Act - text valid length
     const validText = 'a'.repeat(1000);
     act(() => {
       result.current.setSourceText(validText);
     });
-    
+
     // Assert
     expect(result.current.isTextValid).toBe(true);
-    
+
     // Act - text too long
     const tooLongText = 'a'.repeat(10001);
     act(() => {
       result.current.setSourceText(tooLongText);
     });
-    
+
     // Assert
     expect(result.current.isTextValid).toBe(false);
   });
@@ -71,27 +71,27 @@ describe('useGeneratorState', () => {
       generation_id: 123,
       flashcards_proposal: [
         { front: 'Question 1', back: 'Answer 1', source: 'ai-full' },
-        { front: 'Question 2', back: 'Answer 2', source: 'ai-full' }
-      ]
+        { front: 'Question 2', back: 'Answer 2', source: 'ai-full' },
+      ],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse
+      json: async () => mockResponse,
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Set valid text
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     // Act - generate flashcards
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Assert
     expect(result.current.state).toBe('review');
     expect(result.current.generationId).toBe(123);
@@ -107,21 +107,21 @@ describe('useGeneratorState', () => {
     const errorMessage = 'API Error';
     mockFetch.mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ message: errorMessage })
+      json: async () => ({ message: errorMessage }),
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Set valid text
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     // Act - generate flashcards with error
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Assert
     expect(result.current.state).toBe('input');
     expect(result.current.error).toBe(errorMessage);
@@ -132,32 +132,30 @@ describe('useGeneratorState', () => {
     // Arrange
     const mockResponse = {
       generation_id: 123,
-      flashcards_proposal: [
-        { front: 'Original Q', back: 'Original A', source: 'ai-full' }
-      ]
+      flashcards_proposal: [{ front: 'Original Q', back: 'Original A', source: 'ai-full' }],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse
+      json: async () => mockResponse,
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Setup initial flashcards via generate
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Act - update flashcard
     act(() => {
       result.current.updateFlashcard(1, { front: 'Updated Q', back: 'Updated A' });
     });
-    
+
     // Assert
     expect(result.current.flashcards[0].front).toBe('Updated Q');
     expect(result.current.flashcards[0].back).toBe('Updated A');
@@ -171,40 +169,40 @@ describe('useGeneratorState', () => {
       generation_id: 123,
       flashcards_proposal: [
         { front: 'Q1', back: 'A1', source: 'ai-full' },
-        { front: 'Q2', back: 'A2', source: 'ai-full' }
-      ]
+        { front: 'Q2', back: 'A2', source: 'ai-full' },
+      ],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse
+      json: async () => mockResponse,
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Setup initial flashcards via generate
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Act - accept first flashcard
     act(() => {
       result.current.acceptFlashcard(1);
     });
-    
+
     // Assert
     expect(result.current.flashcards[0].status).toBe('accepted');
     expect(result.current.flashcards[1].status).toBe('pending');
-    
+
     // Act - reject second flashcard
     act(() => {
       result.current.rejectFlashcard(2);
     });
-    
+
     // Assert
     expect(result.current.flashcards[1].status).toBe('rejected');
   });
@@ -216,48 +214,48 @@ describe('useGeneratorState', () => {
       flashcards_proposal: [
         { front: 'Q1', back: 'A1', source: 'ai-full' },
         { front: 'Q2', back: 'A2', source: 'ai-full' },
-        { front: 'Q3', back: 'A3', source: 'ai-full' }
-      ]
+        { front: 'Q3', back: 'A3', source: 'ai-full' },
+      ],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockGenerateResponse
+      json: async () => mockGenerateResponse,
     });
-    
+
     // Mock save response
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ success: true })
+      json: async () => ({ success: true }),
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Generate flashcards
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Accept first and third flashcards, reject second
     act(() => {
       result.current.acceptFlashcard(1);
       result.current.rejectFlashcard(2);
       result.current.updateFlashcard(3, { front: 'Updated Q3' });
     });
-    
+
     // Act - save accepted flashcards
     await act(async () => {
       await result.current.saveAcceptedFlashcards();
     });
-    
+
     // Assert
     expect(result.current.state).toBe('complete');
     expect(mockFetch).toHaveBeenCalledWith('/api/flashcards', expect.any(Object));
-    
+
     // Check that only accepted and edited flashcards were sent
     const requestBody = JSON.parse(mockFetch.mock.calls[1][1].body);
     expect(requestBody.flashcards.length).toBeGreaterThan(0);
@@ -267,37 +265,35 @@ describe('useGeneratorState', () => {
     // Arrange - generate flashcards
     const mockGenerateResponse = {
       generation_id: 123,
-      flashcards_proposal: [
-        { front: 'Q1', back: 'A1', source: 'ai-full' }
-      ]
+      flashcards_proposal: [{ front: 'Q1', back: 'A1', source: 'ai-full' }],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockGenerateResponse
+      json: async () => mockGenerateResponse,
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Generate flashcards
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Reject all flashcards
     act(() => {
       result.current.rejectFlashcard(1);
     });
-    
+
     // Act - try to save with no accepted flashcards
     await act(async () => {
       await result.current.saveAcceptedFlashcards();
     });
-    
+
     // Assert
     expect(result.current.error).toBe('Brak fiszek do zapisania');
     expect(showError).toHaveBeenCalled();
@@ -309,37 +305,35 @@ describe('useGeneratorState', () => {
     // Arrange - generate flashcards first
     const mockResponse = {
       generation_id: 123,
-      flashcards_proposal: [
-        { front: 'Q', back: 'A', source: 'ai-full' }
-      ]
+      flashcards_proposal: [{ front: 'Q', back: 'A', source: 'ai-full' }],
     };
-    
+
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse
+      json: async () => mockResponse,
     });
-    
+
     const { result } = renderHook(() => useGeneratorState());
-    
+
     // Setup state via generate
     act(() => {
       result.current.setSourceText('a'.repeat(1000));
     });
-    
+
     await act(async () => {
       await result.current.generateFlashcards();
     });
-    
+
     // Verify state is set
     expect(result.current.sourceText).toBe('a'.repeat(1000));
     expect(result.current.generationId).toBe(123);
     expect(result.current.flashcards.length).toBe(1);
-    
+
     // Act - reset state
     act(() => {
       result.current.reset();
     });
-    
+
     // Assert
     expect(result.current.state).toBe('input');
     expect(result.current.sourceText).toBe('');

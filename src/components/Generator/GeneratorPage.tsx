@@ -1,10 +1,10 @@
-import React from "react";
-import { useGeneratorState } from "./useGeneratorState";
-import { GenerationForm } from "./GenerationForm";
-import { GenerationResults } from "./GenerationResults";
-import { Card } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import React from 'react';
+import { useGeneratorState } from './useGeneratorState';
+import { GenerationForm } from './GenerationForm';
+import { GenerationResults } from './GenerationResults';
+import { Card } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 export const GeneratorPage: React.FC = () => {
   const generatorState = useGeneratorState();
@@ -23,7 +23,7 @@ export const GeneratorPage: React.FC = () => {
     acceptFlashcard,
     rejectFlashcard,
     saveAcceptedFlashcards,
-    reset
+    reset,
   } = generatorState;
 
   return (
@@ -62,4 +62,4 @@ export const GeneratorPage: React.FC = () => {
       </Card>
     </div>
   );
-}; 
+};

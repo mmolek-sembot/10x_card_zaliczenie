@@ -7,20 +7,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      return new Response(
-        JSON.stringify({ error: 'Błąd wylogowania' }),
-        { status: 500 }
-      );
+      return new Response(JSON.stringify({ error: 'Błąd wylogowania' }), { status: 500 });
     }
 
-    return new Response(
-      JSON.stringify({ success: true }),
-      { status: 200 }
-    );
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: 'Błąd wylogowania' }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Błąd wylogowania' }), { status: 500 });
   }
 };

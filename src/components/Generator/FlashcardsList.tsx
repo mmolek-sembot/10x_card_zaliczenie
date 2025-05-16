@@ -1,6 +1,6 @@
-import React from "react";
-import { FlashcardPreview } from "./FlashcardPreview";
-import type { FlashcardProposalViewModel, FlashcardUpdateData } from "./types";
+import React from 'react';
+import { FlashcardPreview } from './FlashcardPreview';
+import type { FlashcardProposalViewModel, FlashcardUpdateData } from './types';
 
 interface FlashcardsListProps {
   flashcards: FlashcardProposalViewModel[];
@@ -13,19 +13,15 @@ export const FlashcardsList: React.FC<FlashcardsListProps> = ({
   flashcards,
   onUpdateFlashcard,
   onAcceptFlashcard,
-  onRejectFlashcard
+  onRejectFlashcard,
 }) => {
   if (flashcards.length === 0) {
-    return (
-      <div className="text-center p-8 text-gray-500">
-        Brak fiszek do wyświetlenia
-      </div>
-    );
+    return <div className="text-center p-8 text-gray-500">Brak fiszek do wyświetlenia</div>;
   }
 
   return (
     <div className="space-y-6">
-      {flashcards.map(flashcard => (
+      {flashcards.map((flashcard) => (
         <FlashcardPreview
           key={flashcard.id}
           flashcard={flashcard}
@@ -36,4 +32,4 @@ export const FlashcardsList: React.FC<FlashcardsListProps> = ({
       ))}
     </div>
   );
-}; 
+};

@@ -13,7 +13,7 @@ import type { ChatOptions, FlashcardCollectionContent } from '../services/openro
 /**
  * Service responsible for handling flashcard generation logic.
  * Utilizes an AI model to generate flashcards from a given source text.
- * Handles validation, error logging, and database interactions related to 
+ * Handles validation, error logging, and database interactions related to
  * flashcard generation processes.
  */
 export class GenerationService {
@@ -27,7 +27,8 @@ export class GenerationService {
     this.openRouter = createOpenRouterService({
       defaultModel: this.model,
       timeout: this.aiRequestTimeout,
-      defaultSystemMessage: 'You are a specialized AI that creates educational flashcards. Your task is to create clear, concise, and educational flashcards based on the text provided.'
+      defaultSystemMessage:
+        'You are a specialized AI that creates educational flashcards. Your task is to create clear, concise, and educational flashcards based on the text provided.',
     });
   }
 
@@ -73,7 +74,7 @@ export class GenerationService {
 
       // Generate flashcards using OpenRouter AI service
       const flashcardProposals = await this.callAiService(data.source_text);
-      
+
       // Update generation record with results
       const { error: updateError } = await this.supabase
         .from('generations')
@@ -128,7 +129,7 @@ export class GenerationService {
 
       // Race the AI call against the timeout
       const flashcards = await Promise.race([aiServicePromise, timeoutPromise]);
-      
+
       return flashcards;
     } catch (error) {
       if (error instanceof Error) {
@@ -148,7 +149,7 @@ export class GenerationService {
     try {
       // Determine number of flashcards to generate based on content length
       const cardCount = Math.min(Math.max(Math.floor(sourceText.length / 1000), 5), 10);
-      
+
       // Create the prompt for generating flashcards with explicit JSON instructions
       const prompt = `Generate ${cardCount} educational flashcards from the following text. 
 Each flashcard should focus on a key concept or fact from the text.
@@ -182,36 +183,36 @@ ${sourceText}`;
           parameters: {
             temperature: 0.4,
             top_p: 0.95,
-            max_tokens: 2000
-          }
+            max_tokens: 2000,
+          },
         });
-        
+
         // Convert the response to our FlashcardProposalDto format
         const flashcardCollection = response.content as FlashcardCollectionContent;
-        
-        return flashcardCollection.flashcards.map(card => ({
+
+        return flashcardCollection.flashcards.map((card) => ({
           front: card.front,
           back: card.back,
-          source: 'ai-full' as const
+          source: 'ai-full' as const,
         }));
       } catch (schemaError) {
         // Fallback: Try using a text response and manual JSON parsing
         console.warn('Schema validation failed, attempting fallback method:', schemaError);
-        
+
         const textResponse = await this.openRouter.chat({
           userMessage: prompt,
           // No responseFormat specified - get raw text
           parameters: {
             temperature: 0.4,
             top_p: 0.95,
-            max_tokens: 2000
-          }
+            max_tokens: 2000,
+          },
         });
-        
+
         // Extract JSON from text response
         const content = textResponse.content as string;
         const jsonMatch = content.match(/\{[\s\S]*\}/);
-        
+
         if (jsonMatch) {
           try {
             const parsedJson = JSON.parse(jsonMatch[0]);
@@ -219,14 +220,14 @@ ${sourceText}`;
               return parsedJson.flashcards.map((card: any) => ({
                 front: card.front || '',
                 back: card.back || '',
-                source: 'ai-full' as const
+                source: 'ai-full' as const,
               }));
             }
           } catch (parseError) {
             console.error('Failed to parse extracted JSON:', parseError);
           }
         }
-        
+
         // If all else fails, try to extract flashcards from text using patterns
         return this.extractFlashcardsFromText(content, cardCount);
       }
@@ -235,96 +236,97 @@ ${sourceText}`;
       throw new Error('Failed to generate flashcards from text');
     }
   }
-  
+
   /**
    * Fallback method to extract flashcards from unstructured text response
    * when JSON parsing fails
    */
   private extractFlashcardsFromText(text: string, expectedCount: number): FlashcardProposalDto[] {
     const flashcards: FlashcardProposalDto[] = [];
-    
+
     // Try to identify flashcard patterns in the text
     // Look for numbered patterns, "Front:" / "Back:" patterns, or Q&A patterns
-    
+
     // Pattern 1: Numbered flashcards
     const numberedPattern = /(\d+)[\s.):]+([^\n]+)\n+([^\n]+)/g;
     let match;
-    
+
     while ((match = numberedPattern.exec(text)) !== null && flashcards.length < expectedCount) {
       const front = match[2].trim();
       const back = match[3].trim();
-      
+
       if (front && back) {
         flashcards.push({
           front,
           back,
-          source: 'ai-full' as const
+          source: 'ai-full' as const,
         });
       }
     }
-    
+
     // Pattern 2: Front/Back pattern
     if (flashcards.length < expectedCount) {
       const frontBackPattern = /Front:[\s]*([^\n]+)\n+Back:[\s]*([^\n]+)/gi;
       while ((match = frontBackPattern.exec(text)) !== null && flashcards.length < expectedCount) {
         const front = match[1].trim();
         const back = match[2].trim();
-        
+
         if (front && back) {
           flashcards.push({
             front,
             back,
-            source: 'ai-full' as const
+            source: 'ai-full' as const,
           });
         }
       }
     }
-    
+
     // Pattern 3: Q&A pattern
     if (flashcards.length < expectedCount) {
       const qaPattern = /(?:Question|Q):[\s]*([^\n]+)\n+(?:Answer|A):[\s]*([^\n]+)/gi;
       while ((match = qaPattern.exec(text)) !== null && flashcards.length < expectedCount) {
         const front = match[1].trim();
         const back = match[2].trim();
-        
+
         if (front && back) {
           flashcards.push({
             front,
             back,
-            source: 'ai-full' as const
+            source: 'ai-full' as const,
           });
         }
       }
     }
-    
+
     // If we still couldn't extract any flashcards, create simple ones from paragraphs
     if (flashcards.length === 0) {
-      const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
-      
+      const paragraphs = text.split('\n\n').filter((p) => p.trim().length > 0);
+
       for (let i = 0; i < Math.min(paragraphs.length, expectedCount); i++) {
         const paragraph = paragraphs[i].trim();
         if (paragraph.length > 10) {
           const sentenceEnd = paragraph.search(/[.!?]/);
           if (sentenceEnd > 0) {
             const front = paragraph.substring(0, sentenceEnd + 1);
-            const back = paragraph.substring(sentenceEnd + 1).trim() || "Review this content for details.";
-            
+            const back =
+              paragraph.substring(sentenceEnd + 1).trim() || 'Review this content for details.';
+
             flashcards.push({
               front,
               back,
-              source: 'ai-full' as const
+              source: 'ai-full' as const,
             });
           } else {
             flashcards.push({
               front: `What is important about this content?`,
               back: paragraph,
-              source: 'ai-full' as const
+              source: 'ai-full' as const,
             });
           }
         }
       }
     }
-    
+
     return flashcards;
   }
 
@@ -332,7 +334,7 @@ ${sourceText}`;
    * Log generation errors to the database for monitoring and debugging
    */
   private async logGenerationError(
-    userId: string, 
+    userId: string,
     error: Error,
     sourceTextHash: string,
     sourceTextLength: number,

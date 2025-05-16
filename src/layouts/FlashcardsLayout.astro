@@ -11,15 +11,15 @@ const { title, description } = Astro.props;
 
 <BaseLayout title={title}>
   <div class="container mx-auto px-4 py-8">
-    {title && (
-      <header class="mb-8">
-        <h1 class="text-3xl font-bold">{title}</h1>
-        {description && (
-          <p class="text-muted-foreground mt-2">{description}</p>
-        )}
-      </header>
-    )}
-    
+    {
+      title && (
+        <header class="mb-8">
+          <h1 class="text-3xl font-bold">{title}</h1>
+          {description && <p class="text-muted-foreground mt-2">{description}</p>}
+        </header>
+      )
+    }
+
     <div id="flashcards-root">
       <slot />
     </div>

@@ -1,5 +1,9 @@
 export class OpenRouterError extends Error {
-  constructor(message: string, public code: string, public cause?: Error) {
+  constructor(
+    message: string,
+    public code: string,
+    public cause?: Error
+  ) {
     super(message);
     this.name = 'OpenRouterError';
   }
@@ -73,4 +77,4 @@ export class SchemaValidationError extends OpenRouterError {
     super(message, 'schema_validation_error', cause);
     this.name = 'SchemaValidationError';
   }
-} 
+}

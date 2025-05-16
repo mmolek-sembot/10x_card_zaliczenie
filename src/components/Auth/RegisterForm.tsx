@@ -1,8 +1,8 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,26 +11,23 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 const registerSchema = z
   .object({
-    email: z.string().email("Wprowadź poprawny adres email"),
+    email: z.string().email('Wprowadź poprawny adres email'),
     password: z
       .string()
-      .min(8, "Hasło musi mieć minimum 8 znaków")
-      .regex(/[A-Z]/, "Hasło musi zawierać przynajmniej jedną wielką literę")
-      .regex(/[0-9]/, "Hasło musi zawierać przynajmniej jedną cyfrę")
-      .regex(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Hasło musi zawierać przynajmniej jeden znak specjalny"
-      ),
+      .min(8, 'Hasło musi mieć minimum 8 znaków')
+      .regex(/[A-Z]/, 'Hasło musi zawierać przynajmniej jedną wielką literę')
+      .regex(/[0-9]/, 'Hasło musi zawierać przynajmniej jedną cyfrę')
+      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Hasło musi zawierać przynajmniej jeden znak specjalny'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła nie są identyczne",
-    path: ["confirmPassword"],
+    message: 'Hasła nie są identyczne',
+    path: ['confirmPassword'],
   });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -40,16 +37,13 @@ interface RegisterFormProps {
   isLoading?: boolean;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({
-  onSubmit,
-  isLoading,
-}) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading }) => {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -119,7 +113,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <div className="space-y-2">
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Rejestracja..." : "Zarejestruj się"}
+            {isLoading ? 'Rejestracja...' : 'Zarejestruj się'}
           </Button>
 
           <p className="text-center text-sm">

@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
-import { FlashcardsList } from "./FlashcardsList";
-import { FlashcardsSummary } from "./FlashcardsSummary";
-import type { FlashcardProposalViewModel, FlashcardUpdateData } from "./types";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle } from "lucide-react";
+import React, { useMemo } from 'react';
+import { FlashcardsList } from './FlashcardsList';
+import { FlashcardsSummary } from './FlashcardsSummary';
+import type { FlashcardProposalViewModel, FlashcardUpdateData } from './types';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 interface GenerationResultsProps {
   generationId: number | null;
@@ -26,13 +26,14 @@ export const GenerationResults: React.FC<GenerationResultsProps> = ({
   onSaveAccepted,
   onReset,
   isLoading,
-  isComplete
+  isComplete,
 }) => {
   const { totalCount, acceptedCount, rejectedCount } = useMemo(() => {
     return {
       totalCount: flashcards.length,
-      acceptedCount: flashcards.filter(f => f.status === 'accepted' || f.status === 'edited').length,
-      rejectedCount: flashcards.filter(f => f.status === 'rejected').length
+      acceptedCount: flashcards.filter((f) => f.status === 'accepted' || f.status === 'edited')
+        .length,
+      rejectedCount: flashcards.filter((f) => f.status === 'rejected').length,
     };
   }, [flashcards]);
 
@@ -50,8 +51,8 @@ export const GenerationResults: React.FC<GenerationResultsProps> = ({
         <div className="space-y-2">
           <h3 className="text-xl font-semibold">Wygenerowane propozycje fiszek</h3>
           <p className="text-gray-500">
-            Przejrzyj wygenerowane propozycje. Możesz edytować ich treść, akceptować lub odrzucać poszczególne fiszki.
-            Tylko zaakceptowane fiszki zostaną zapisane.
+            Przejrzyj wygenerowane propozycje. Możesz edytować ich treść, akceptować lub odrzucać
+            poszczególne fiszki. Tylko zaakceptowane fiszki zostaną zapisane.
           </p>
         </div>
       )}
@@ -67,7 +68,7 @@ export const GenerationResults: React.FC<GenerationResultsProps> = ({
             />
           )}
         </div>
-        
+
         <div className="order-1 md:order-2">
           <div className="sticky top-4">
             <FlashcardsSummary
@@ -84,4 +85,4 @@ export const GenerationResults: React.FC<GenerationResultsProps> = ({
       </div>
     </div>
   );
-}; 
+};

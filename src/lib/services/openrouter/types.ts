@@ -103,8 +103,8 @@ export interface FlashcardContent {
  * Represents a collection of flashcards returned from FLASHCARD_COLLECTION schema
  */
 export interface FlashcardCollectionContent {
-  flashcards: Array<{
+  flashcards: {
     front: string;
     back: string;
-  }>;
-} 
+  }[];
+}

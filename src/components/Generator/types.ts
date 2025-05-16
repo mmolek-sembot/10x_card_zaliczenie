@@ -1,4 +1,4 @@
-import type { FlashcardSource, CreateFlashcardInputDto, FlashcardProposalDto } from "../../types";
+import type { FlashcardSource, CreateFlashcardInputDto, FlashcardProposalDto } from '../../types';
 
 export interface GeneratorViewModel {
   state: GenerationState;
@@ -13,7 +13,7 @@ export interface GeneratorViewModel {
 export type GenerationState = 'input' | 'generating' | 'review' | 'saving' | 'complete';
 
 export interface FlashcardProposalViewModel {
-  id: number;             // Lokalny identyfikator (nie z bazy)
+  id: number; // Lokalny identyfikator (nie z bazy)
   front: string;
   back: string;
   source: FlashcardSource;
@@ -51,4 +51,4 @@ export interface TextInputProps {
 
 export interface SaveFlashcardsPayload {
   flashcards: CreateFlashcardInputDto[];
-} 
+}

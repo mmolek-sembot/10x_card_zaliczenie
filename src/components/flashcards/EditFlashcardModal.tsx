@@ -1,15 +1,15 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -17,18 +17,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import type { FlashcardDto, CreateFlashcardInputDto } from "@/types";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import type { FlashcardDto, CreateFlashcardInputDto } from '@/types';
 
 const formSchema = z.object({
-  front: z.string()
-    .min(1, "Front content is required")
-    .max(200, "Front content must be at most 200 characters"),
-  back: z.string()
-    .min(1, "Back content is required")
-    .max(600, "Back content must be at most 600 characters"),
+  front: z
+    .string()
+    .min(1, 'Front content is required')
+    .max(200, 'Front content must be at most 200 characters'),
+  back: z
+    .string()
+    .min(1, 'Back content is required')
+    .max(600, 'Back content must be at most 600 characters'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -51,8 +53,8 @@ export function EditFlashcardModal({
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      front: "",
-      back: "",
+      front: '',
+      back: '',
     },
   });
 
@@ -64,8 +66,8 @@ export function EditFlashcardModal({
       });
     } else {
       form.reset({
-        front: "",
-        back: "",
+        front: '',
+        back: '',
       });
     }
   }, [flashcard, form]);
@@ -75,7 +77,7 @@ export function EditFlashcardModal({
       await onSubmit({
         ...data,
         source: 'manual',
-        generation_id: null
+        generation_id: null,
       });
       form.reset();
     } catch (error) {
@@ -87,9 +89,7 @@ export function EditFlashcardModal({
     <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>
-            {flashcard ? "Edit Flashcard" : "Create New Flashcard"}
-          </DialogTitle>
+          <DialogTitle>{flashcard ? 'Edit Flashcard' : 'Create New Flashcard'}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -101,11 +101,7 @@ export function EditFlashcardModal({
                 <FormItem>
                   <FormLabel>Front</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter the front content"
-                      className="h-24"
-                      {...field}
-                    />
+                    <Textarea placeholder="Enter the front content" className="h-24" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,11 +115,7 @@ export function EditFlashcardModal({
                 <FormItem>
                   <FormLabel>Back</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter the back content"
-                      className="h-32"
-                      {...field}
-                    />
+                    <Textarea placeholder="Enter the back content" className="h-32" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,16 +123,11 @@ export function EditFlashcardModal({
             />
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : flashcard ? "Save Changes" : "Create"}
+                {isLoading ? 'Saving...' : flashcard ? 'Save Changes' : 'Create'}
               </Button>
             </DialogFooter>
           </form>

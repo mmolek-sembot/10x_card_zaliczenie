@@ -12,23 +12,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (error) {
-      return new Response(
-        JSON.stringify({ error: 'Błąd logowania' }),
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: 'Błąd logowania' }), { status: 400 });
     }
 
     return new Response(
       JSON.stringify({
         user: data.user,
-        session: data.session
+        session: data.session,
       }),
       { status: 200 }
     );
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: 'Błąd logowania' }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: 'Błąd logowania' }), { status: 500 });
   }
 };

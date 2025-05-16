@@ -10,35 +10,35 @@ export type * from './types';
 
 /**
  * Creates a new instance of the OpenRouter service with the specified configuration.
- * 
+ *
  * This service provides an interface to generate educational flashcards and other
  * content using various AI models from OpenRouter.
- * 
+ *
  * @param config - Optional configuration for the service
  * @returns An initialized OpenRouterService instance
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
  * import { createOpenRouterService } from '@/lib/services/openrouter';
- * 
+ *
  * const openRouter = createOpenRouterService();
- * 
+ *
  * // Simple request
  * const response = await openRouter.chat({
  *   userMessage: "Create a flashcard about photosynthesis"
  * });
- * 
+ *
  * console.log(response.content);
  * ```
- * 
+ *
  * @example
  * ```typescript
  * // Using with structured formats
  * import { createOpenRouterService, SCHEMAS } from '@/lib/services/openrouter';
- * 
+ *
  * const openRouter = createOpenRouterService();
- * 
+ *
  * // Get a structured flashcard
  * const response = await openRouter.chat({
  *   userMessage: "Create a flashcard about photosynthesis",
@@ -49,25 +49,25 @@ export type * from './types';
  *     max_tokens: 500
  *   }
  * });
- * 
+ *
  * const flashcard = response.content as FlashcardContent;
  * console.log(`Front: ${flashcard.front}`);
  * console.log(`Back: ${flashcard.back}`);
  * ```
- * 
+ *
  * @example
  * ```typescript
  * // Streaming response
  * import { createOpenRouterService } from '@/lib/services/openrouter';
- * 
+ *
  * const openRouter = createOpenRouterService();
- * 
+ *
  * // Get a streaming response
  * const stream = await openRouter.stream({
  *   systemMessage: "You are an educational assistant creating flashcards.",
  *   userMessage: "Create a detailed flashcard about DNA replication"
  * });
- * 
+ *
  * // Process the stream
  * for await (const chunk of stream) {
  *   console.log(chunk.content);
@@ -87,11 +87,11 @@ export function createOpenRouterService(config?: OpenRouterConfig): OpenRouterSe
  * - TRUE_FALSE: For true/false questions
  * - FILL_IN_BLANK: For fill-in-the-blank exercises
  * - MATCHING: For matching exercises
- * 
+ *
  * @example
  * ```typescript
  * import { createOpenRouterService, SCHEMAS } from '@/lib/services/openrouter';
- * 
+ *
  * const openRouter = createOpenRouterService();
  * const response = await openRouter.chat({
  *   userMessage: "Create a multiple choice question about the solar system",
@@ -106,4 +106,4 @@ export { SCHEMAS };
  * For most use cases, use the createOpenRouterService factory function instead.
  * Direct access to the class is provided for advanced customization scenarios.
  */
-export { OpenRouterService }; 
+export { OpenRouterService };

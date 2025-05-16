@@ -9,17 +9,18 @@ export const prerender = false;
 
 // Validate flashcard ID parameter
 const flashcardIdSchema = z.object({
-  id: z.coerce.number().int().positive()
+  id: z.coerce.number().int().positive(),
 });
 
 // Validate update flashcard command
-const updateFlashcardSchema = z.object({
-  front: z.string().max(200).optional(),
-  back: z.string().max(600).optional()
-}).refine(
-  data => data.front !== undefined || data.back !== undefined,
-  { message: "At least one of 'front' or 'back' must be provided" }
-);
+const updateFlashcardSchema = z
+  .object({
+    front: z.string().max(200).optional(),
+    back: z.string().max(600).optional(),
+  })
+  .refine((data) => data.front !== undefined || data.back !== undefined, {
+    message: "At least one of 'front' or 'back' must be provided",
+  });
 
 export const GET: APIRoute = async ({ params, locals }) => {
   try {
@@ -34,13 +35,16 @@ export const GET: APIRoute = async ({ params, locals }) => {
     // Validate ID parameter
     const result = flashcardIdSchema.safeParse({ id: params.id });
     if (!result.success) {
-      return new Response(JSON.stringify({ 
-        error: 'Invalid flashcard ID',
-        details: result.error.issues 
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid flashcard ID',
+          details: result.error.issues,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Initialize service and fetch flashcard
@@ -49,28 +53,33 @@ export const GET: APIRoute = async ({ params, locals }) => {
 
     // Return 404 if flashcard not found
     if (!flashcard) {
-      return new Response(JSON.stringify({ 
-        error: 'Flashcard not found' 
-      }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Flashcard not found',
+        }),
+        {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Return successful response
     return new Response(JSON.stringify(flashcard), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
     console.error('Error fetching flashcard:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error' 
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error',
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 };
 
@@ -87,19 +96,22 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     // Validate ID parameter
     const result = flashcardIdSchema.safeParse({ id: params.id });
     if (!result.success) {
-      return new Response(JSON.stringify({ 
-        error: 'Invalid flashcard ID',
-        details: result.error.issues 
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid flashcard ID',
+          details: result.error.issues,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Log incoming request
     console.info('Processing DELETE /api/flashcards/:id request:', {
       flashcardId: params.id,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Initialize service and delete flashcard
@@ -108,27 +120,32 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
 
     // Return 404 if flashcard not found
     if (!deleted) {
-      return new Response(JSON.stringify({ 
-        error: 'Flashcard not found' 
-      }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Flashcard not found',
+        }),
+        {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Return successful response with no content
     return new Response(null, {
-      status: 204
+      status: 204,
     });
-
   } catch (error) {
     console.error('Error deleting flashcard:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error' 
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error',
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 };
 
@@ -145,20 +162,23 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     // Validate ID parameter
     const idResult = flashcardIdSchema.safeParse({ id: params.id });
     if (!idResult.success) {
-      return new Response(JSON.stringify({ 
-        error: 'Invalid flashcard ID',
-        details: idResult.error.issues 
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid flashcard ID',
+          details: idResult.error.issues,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Log incoming request
     console.info('Processing PUT /api/flashcards/:id request:', {
       flashcardId: params.id,
       userId: DEFAULT_USER_ID,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Parse and validate request body
@@ -168,14 +188,17 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     } catch (error) {
       console.error('Invalid JSON in request body:', {
         error,
-        rawBody: await request.text()
+        rawBody: await request.text(),
       });
-      return new Response(JSON.stringify({
-        error: 'Invalid JSON in request body'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Invalid JSON in request body',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     const updateResult = updateFlashcardSchema.safeParse(body);
@@ -183,15 +206,18 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       console.warn('Validation error in PUT /api/flashcards/:id:', {
         flashcardId: params.id,
         issues: updateResult.error.issues,
-        receivedData: body
+        receivedData: body,
       });
-      return new Response(JSON.stringify({
-        error: 'Validation error',
-        details: updateResult.error.issues
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: 'Validation error',
+          details: updateResult.error.issues,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Initialize service and update flashcard
@@ -207,59 +233,67 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       if (!updatedFlashcard) {
         console.warn('Flashcard not found:', {
           flashcardId: idResult.data.id,
-          userId: DEFAULT_USER_ID
+          userId: DEFAULT_USER_ID,
         });
-        return new Response(JSON.stringify({ 
-          error: 'Flashcard not found' 
-        }), {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' }
-        });
+        return new Response(
+          JSON.stringify({
+            error: 'Flashcard not found',
+          }),
+          {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
       }
 
       // Return successful response
       return new Response(JSON.stringify(updatedFlashcard), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     } catch (error) {
       // Handle specific error cases from service
       const errorMessage = error instanceof Error ? error.message : String(error);
-      
+
       // Map service errors to appropriate HTTP status codes
       let status = 500;
       if (errorMessage.includes('Duplicate data conflict')) status = 409;
       else if (errorMessage.includes('Data validation error')) status = 400;
       else if (errorMessage.includes('Invalid reference')) status = 400;
-      
+
       console.error('Error in PUT /api/flashcards/:id:', {
         error,
         flashcardId: idResult.data.id,
         userId: DEFAULT_USER_ID,
-        status
-      });
-
-      return new Response(JSON.stringify({ 
-        error: errorMessage
-      }), {
         status,
-        headers: { 'Content-Type': 'application/json' }
       });
-    }
 
+      return new Response(
+        JSON.stringify({
+          error: errorMessage,
+        }),
+        {
+          status,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
   } catch (error) {
     // Handle unexpected errors
     console.error('Unexpected error in PUT /api/flashcards/:id:', {
       error,
       stack: error instanceof Error ? error.stack : undefined,
-      params
+      params,
     });
 
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error',
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 };

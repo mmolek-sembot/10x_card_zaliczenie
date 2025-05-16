@@ -6,30 +6,24 @@ import type { FlashcardProposalViewModel } from './types';
 
 // Mock the child components
 vi.mock('./FlashcardsList', () => ({
-  FlashcardsList: ({ 
-    flashcards, 
-    onUpdateFlashcard, 
-    onAcceptFlashcard, 
-    onRejectFlashcard 
+  FlashcardsList: ({
+    flashcards,
+    onUpdateFlashcard,
+    onAcceptFlashcard,
+    onRejectFlashcard,
   }: any) => (
     <div data-testid="flashcards-list">
       <span data-testid="flashcards-count">{flashcards.length}</span>
-      <button 
-        data-testid="update-flashcard-btn" 
+      <button
+        data-testid="update-flashcard-btn"
         onClick={() => onUpdateFlashcard(1, { front: 'Updated front', back: 'Updated back' })}
       >
         Update
       </button>
-      <button 
-        data-testid="accept-flashcard-btn" 
-        onClick={() => onAcceptFlashcard(1)}
-      >
+      <button data-testid="accept-flashcard-btn" onClick={() => onAcceptFlashcard(1)}>
         Accept
       </button>
-      <button 
-        data-testid="reject-flashcard-btn" 
-        onClick={() => onRejectFlashcard(1)}
-      >
+      <button data-testid="reject-flashcard-btn" onClick={() => onRejectFlashcard(1)}>
         Reject
       </button>
     </div>
@@ -37,30 +31,23 @@ vi.mock('./FlashcardsList', () => ({
 }));
 
 vi.mock('./FlashcardsSummary', () => ({
-  FlashcardsSummary: ({ 
-    totalCount, 
-    acceptedCount, 
-    rejectedCount, 
-    onSave, 
-    onReset, 
-    isLoading, 
-    isComplete 
+  FlashcardsSummary: ({
+    totalCount,
+    acceptedCount,
+    rejectedCount,
+    onSave,
+    onReset,
+    isLoading,
+    isComplete,
   }: any) => (
     <div data-testid="flashcards-summary">
       <span data-testid="total-count">{totalCount}</span>
       <span data-testid="accepted-count">{acceptedCount}</span>
       <span data-testid="rejected-count">{rejectedCount}</span>
-      <button 
-        data-testid="save-btn" 
-        onClick={onSave}
-        disabled={isLoading}
-      >
+      <button data-testid="save-btn" onClick={onSave} disabled={isLoading}>
         {isLoading ? 'Saving...' : 'Save'}
       </button>
-      <button 
-        data-testid="reset-btn" 
-        onClick={onReset}
-      >
+      <button data-testid="reset-btn" onClick={onReset}>
         Reset
       </button>
       {isComplete && <span data-testid="complete-indicator">Complete</span>}
@@ -77,7 +64,7 @@ describe('GenerationResults', () => {
       back: 'Answer 1',
       source: 'ai-full',
       status: 'pending',
-      errors: {}
+      errors: {},
     },
     {
       id: 2,
@@ -85,7 +72,7 @@ describe('GenerationResults', () => {
       back: 'Answer 2',
       source: 'ai-full',
       status: 'accepted',
-      errors: {}
+      errors: {},
     },
     {
       id: 3,
@@ -93,8 +80,8 @@ describe('GenerationResults', () => {
       back: 'Answer 3',
       source: 'ai-full',
       status: 'rejected',
-      errors: {}
-    }
+      errors: {},
+    },
   ];
 
   // Default props
@@ -107,7 +94,7 @@ describe('GenerationResults', () => {
     onSaveAccepted: vi.fn(),
     onReset: vi.fn(),
     isLoading: false,
-    isComplete: false
+    isComplete: false,
   };
 
   beforeEach(() => {
@@ -117,7 +104,7 @@ describe('GenerationResults', () => {
   it('should render correctly in review mode', () => {
     // Arrange & Act
     render(<GenerationResults {...defaultProps} />);
-    
+
     // Assert
     expect(screen.getByText('Wygenerowane propozycje fiszek')).toBeInTheDocument();
     expect(screen.getByTestId('flashcards-list')).toBeInTheDocument();
@@ -127,7 +114,7 @@ describe('GenerationResults', () => {
   it('should render success message when complete', () => {
     // Arrange & Act
     render(<GenerationResults {...defaultProps} isComplete={true} />);
-    
+
     // Assert
     expect(screen.getByText('Zapisano pomyślnie!')).toBeInTheDocument();
     expect(screen.queryByTestId('flashcards-list')).not.toBeInTheDocument();
@@ -137,7 +124,7 @@ describe('GenerationResults', () => {
   it('should pass correct counts to FlashcardsSummary', () => {
     // Arrange & Act
     render(<GenerationResults {...defaultProps} />);
-    
+
     // Assert
     expect(screen.getByTestId('total-count').textContent).toBe('3');
     expect(screen.getByTestId('accepted-count').textContent).toBe('1');
@@ -148,22 +135,25 @@ describe('GenerationResults', () => {
     // Arrange
     const mockUpdateFlashcard = vi.fn();
     render(<GenerationResults {...defaultProps} onUpdateFlashcard={mockUpdateFlashcard} />);
-    
+
     // Act
     fireEvent.click(screen.getByTestId('update-flashcard-btn'));
-    
+
     // Assert
-    expect(mockUpdateFlashcard).toHaveBeenCalledWith(1, { front: 'Updated front', back: 'Updated back' });
+    expect(mockUpdateFlashcard).toHaveBeenCalledWith(1, {
+      front: 'Updated front',
+      back: 'Updated back',
+    });
   });
 
   it('should call onAcceptFlashcard when accept button is clicked', () => {
     // Arrange
     const mockAcceptFlashcard = vi.fn();
     render(<GenerationResults {...defaultProps} onAcceptFlashcard={mockAcceptFlashcard} />);
-    
+
     // Act
     fireEvent.click(screen.getByTestId('accept-flashcard-btn'));
-    
+
     // Assert
     expect(mockAcceptFlashcard).toHaveBeenCalledWith(1);
   });
@@ -172,10 +162,10 @@ describe('GenerationResults', () => {
     // Arrange
     const mockRejectFlashcard = vi.fn();
     render(<GenerationResults {...defaultProps} onRejectFlashcard={mockRejectFlashcard} />);
-    
+
     // Act
     fireEvent.click(screen.getByTestId('reject-flashcard-btn'));
-    
+
     // Assert
     expect(mockRejectFlashcard).toHaveBeenCalledWith(1);
   });
@@ -184,10 +174,10 @@ describe('GenerationResults', () => {
     // Arrange
     const mockSaveAccepted = vi.fn();
     render(<GenerationResults {...defaultProps} onSaveAccepted={mockSaveAccepted} />);
-    
+
     // Act
     fireEvent.click(screen.getByTestId('save-btn'));
-    
+
     // Assert
     expect(mockSaveAccepted).toHaveBeenCalledTimes(1);
   });
@@ -196,10 +186,10 @@ describe('GenerationResults', () => {
     // Arrange
     const mockReset = vi.fn();
     render(<GenerationResults {...defaultProps} onReset={mockReset} />);
-    
+
     // Act
     fireEvent.click(screen.getByTestId('reset-btn'));
-    
+
     // Assert
     expect(mockReset).toHaveBeenCalledTimes(1);
   });
@@ -207,7 +197,7 @@ describe('GenerationResults', () => {
   it('should disable save button when isLoading is true', () => {
     // Arrange & Act
     render(<GenerationResults {...defaultProps} isLoading={true} />);
-    
+
     // Assert
     expect(screen.getByTestId('save-btn')).toBeDisabled();
   });
@@ -222,13 +212,13 @@ describe('GenerationResults', () => {
         back: 'Answer 4',
         source: 'ai-edited',
         status: 'edited',
-        errors: {}
-      }
+        errors: {},
+      },
     ];
-    
+
     // Act
     render(<GenerationResults {...defaultProps} flashcards={flashcardsWithEdited} />);
-    
+
     // Assert
     expect(screen.getByTestId('accepted-count').textContent).toBe('2'); // 1 accepted + 1 edited
   });
@@ -236,7 +226,7 @@ describe('GenerationResults', () => {
   it('should handle empty flashcards array', () => {
     // Arrange & Act
     render(<GenerationResults {...defaultProps} flashcards={[]} />);
-    
+
     // Assert
     expect(screen.getByTestId('total-count').textContent).toBe('0');
     expect(screen.getByTestId('accepted-count').textContent).toBe('0');

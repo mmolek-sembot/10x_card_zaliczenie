@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 describe('Button Component', () => {
   it('renders correctly with default props', () => {
     render(<Button>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeInTheDocument();
     expect(button).not.toBeDisabled();
@@ -13,7 +13,7 @@ describe('Button Component', () => {
 
   it('renders with custom className', () => {
     render(<Button className="custom-class">Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toHaveClass('custom-class');
   });
@@ -21,16 +21,16 @@ describe('Button Component', () => {
   it('calls onClick handler when clicked', async () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
-  
+
   it('is disabled when disabled prop is true', () => {
     render(<Button disabled>Click me</Button>);
-    
+
     const button = screen.getByRole('button', { name: /click me/i });
     expect(button).toBeDisabled();
   });

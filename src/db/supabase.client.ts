@@ -24,23 +24,19 @@ export const createSupabaseServerInstance = (context: {
   headers: Headers;
   cookies: AstroCookies;
 }) => {
-  const supabase = createServerClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookieOptions,
-      cookies: {
-        getAll() {
-          return parseCookieHeader(context.headers.get('Cookie') ?? '');
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptionsWithName }[]) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            context.cookies.set(name, value, options),
-          );
-        },
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookieOptions,
+    cookies: {
+      getAll() {
+        return parseCookieHeader(context.headers.get('Cookie') ?? '');
+      },
+      setAll(cookiesToSet: { name: string; value: string; options?: CookieOptionsWithName }[]) {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          context.cookies.set(name, value, options)
+        );
       },
     },
-  );
+  });
 
   return supabase;
 };

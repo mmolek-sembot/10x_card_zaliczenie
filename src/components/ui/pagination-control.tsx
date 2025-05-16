@@ -7,7 +7,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface PaginationControlProps {
   currentPage: number;
@@ -71,10 +77,7 @@ export function PaginationControl({
       </Pagination>
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Items per page</span>
-        <Select
-          value={pageSize.toString()}
-          onValueChange={handlePageSizeChange}
-        >
+        <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
           <SelectTrigger className="w-[70px]">
             <SelectValue />
           </SelectTrigger>

@@ -35,7 +35,7 @@ describe('GenerationForm', () => {
   it('should render correctly', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} />);
-    
+
     // Assert
     expect(screen.getByText('Wprowadź tekst do przetworzenia')).toBeInTheDocument();
     expect(screen.getByTestId('text-input')).toBeInTheDocument();
@@ -45,10 +45,10 @@ describe('GenerationForm', () => {
   it('should pass sourceText to TextInput', () => {
     // Arrange
     const sourceText = 'Sample text for testing';
-    
+
     // Act
     render(<GenerationForm {...defaultProps} sourceText={sourceText} />);
-    
+
     // Assert
     expect(screen.getByTestId('source-textarea')).toHaveValue(sourceText);
   });
@@ -57,12 +57,12 @@ describe('GenerationForm', () => {
     // Arrange
     const mockOnChange = vi.fn();
     render(<GenerationForm {...defaultProps} onSourceTextChange={mockOnChange} />);
-    
+
     // Act
-    fireEvent.change(screen.getByTestId('source-textarea'), { 
-      target: { value: 'New text content' } 
+    fireEvent.change(screen.getByTestId('source-textarea'), {
+      target: { value: 'New text content' },
     });
-    
+
     // Assert
     expect(mockOnChange).toHaveBeenCalledWith('New text content');
   });
@@ -70,7 +70,7 @@ describe('GenerationForm', () => {
   it('should disable TextInput when isGenerating is true', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} isGenerating={true} />);
-    
+
     // Assert
     expect(screen.getByTestId('source-textarea')).toBeDisabled();
   });
@@ -78,7 +78,7 @@ describe('GenerationForm', () => {
   it('should disable generate button when isValid is false', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} isValid={false} />);
-    
+
     // Assert
     expect(screen.getByText('Generuj fiszki')).toBeDisabled();
   });
@@ -86,7 +86,7 @@ describe('GenerationForm', () => {
   it('should enable generate button when isValid is true', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} isValid={true} />);
-    
+
     // Assert
     expect(screen.getByText('Generuj fiszki')).not.toBeDisabled();
   });
@@ -94,7 +94,7 @@ describe('GenerationForm', () => {
   it('should disable generate button when isGenerating is true', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} isValid={true} isGenerating={true} />);
-    
+
     // Assert
     expect(screen.getByText('Generowanie...')).toBeDisabled();
   });
@@ -103,10 +103,10 @@ describe('GenerationForm', () => {
     // Arrange
     const mockOnGenerate = vi.fn();
     render(<GenerationForm {...defaultProps} isValid={true} onGenerate={mockOnGenerate} />);
-    
+
     // Act
     fireEvent.click(screen.getByText('Generuj fiszki'));
-    
+
     // Assert
     expect(mockOnGenerate).toHaveBeenCalledTimes(1);
   });
@@ -114,7 +114,7 @@ describe('GenerationForm', () => {
   it('should show "Generowanie..." text when isGenerating is true', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} isGenerating={true} />);
-    
+
     // Assert
     expect(screen.getByText('Generowanie...')).toBeInTheDocument();
     expect(screen.queryByText('Generuj fiszki')).not.toBeInTheDocument();
@@ -123,7 +123,7 @@ describe('GenerationForm', () => {
   it('should display help text about character requirements', () => {
     // Arrange & Act
     render(<GenerationForm {...defaultProps} />);
-    
+
     // Assert
     expect(screen.getByText(/Tekst powinien mieć od 1000 do 10000 znaków/)).toBeInTheDocument();
   });
