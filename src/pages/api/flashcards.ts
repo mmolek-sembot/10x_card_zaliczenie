@@ -5,7 +5,7 @@ import type {
   CreateFlashcardsResponseDto,
   FlashcardSource 
 } from '../../types';
-import { DEFAULT_USER_ID } from '../../db/supabase.client';
+
 import { FlashcardsService } from '../../lib/services/flashcards.service';
 import { flashcardsQuerySchema } from '../../lib/schemas/flashcards.schema';
 
@@ -60,6 +60,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const command = validationResult.data as CreateFlashcardsCommand;
     const { supabase } = locals;
 
+    // Get user session - middleware gwarantuje, że session istnieje
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session!.user;
+
     // 2. Validate generation_id references if present
     const generationIds = command.flashcards
       .map(f => f.generation_id)
@@ -70,7 +74,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         .from('generations')
         .select('id')
         .in('id', generationIds)
-        .eq('user_id', DEFAULT_USER_ID);
+        .eq('user_id', user.id);
 
       if (genError) {
         console.error('Error checking generations:', genError);
@@ -99,7 +103,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // 3. Insert flashcards
     const flashcardsToInsert = command.flashcards.map(flashcard => ({
       ...flashcard,
-      user_id: DEFAULT_USER_ID,
+      user_id: user.id,
     }));
 
     const { data: createdFlashcards, error: dbError } = await supabase
@@ -160,8 +164,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Get flashcards
-    const service = new FlashcardsService(locals.supabase);
-    const response = await service.getFlashcards(result.data, DEFAULT_USER_ID);
+    const { supabase } = locals;
+
+    // Get user session - middleware gwarantuje, że session istnieje
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session!.user;
+
+    const service = new FlashcardsService(supabase);
+    const response = await service.getFlashcards(result.data, user.id);
 
     return new Response(JSON.stringify(response), {
       status: 200,
